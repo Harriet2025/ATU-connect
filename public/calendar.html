@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link active"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head"><div><h1>Calendar</h1><p class="text-muted" id="calendarSubtitle">Loading events…</p></div></div>
+
+      <div class="cal-legend">
+        <span class="cal-legend-item"><span class="legend-dot dot-exam"></span>Exams</span>
+        <span class="cal-legend-item"><span class="legend-dot dot-deadline"></span>Deadlines</span>
+        <span class="cal-legend-item"><span class="legend-dot dot-dept"></span>Dept Meetings</span>
+        <span class="cal-legend-item"><span class="legend-dot dot-src"></span>SRC Events</span>
+        <span class="cal-legend-item"><span class="legend-dot dot-holiday"></span>Public Holidays</span>
+        <span class="cal-legend-item"><span class="legend-dot dot-seminar"></span>Guest Lectures / Seminars</span>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head"><h3 id="calendarMonthLabel">This Month</h3></div>
+        <div class="calendar-full" id="calendarGrid">
+          <span class="cal-dow">Sun</span><span class="cal-dow">Mon</span><span class="cal-dow">Tue</span><span class="cal-dow">Wed</span><span class="cal-dow">Thu</span><span class="cal-dow">Fri</span><span class="cal-dow">Sat</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h3>Upcoming</h3></div>
+        <div id="upcomingEvents"><p class="text-muted">Loading upcoming events…</p></div>
+      </section>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

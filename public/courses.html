@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link active"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head"><div><h1>My Courses</h1><p class="text-muted">All courses you are enrolled in this semester.</p></div></div>
+
+      <div class="course-grid" id="coursesGrid">
+        <p class="text-muted">Loading courses…</p>
+        <div class="course-card" style="display:none;">
+          <span class="course-code">CS 301</span>
+          <h3>Data Structures and Algorithms</h3>
+          <p>Dr. Kofi Owusu · 4 Credits</p>
+          <div class="course-stats"><div><strong>6</strong>Assignments</div><div><strong>15</strong>Announcements</div><div><strong>22</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">GEN 214</span>
+          <h3>Creative Thinking</h3>
+          <p>Mrs. Abena Frimpong · 2 Credits</p>
+          <div class="course-stats"><div><strong>2</strong>Assignments</div><div><strong>4</strong>Announcements</div><div><strong>6</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">CS 322</span>
+          <h3>Grid Computing</h3>
+          <p>Mr. Yaw Asante · 3 Credits</p>
+          <div class="course-stats"><div><strong>3</strong>Assignments</div><div><strong>6</strong>Announcements</div><div><strong>10</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">GEN 305</span>
+          <h3>New Venture Creation</h3>
+          <p>Mr. Kwame Darko · 3 Credits</p>
+          <div class="course-stats"><div><strong>4</strong>Assignments</div><div><strong>8</strong>Announcements</div><div><strong>9</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">CS 315</span>
+          <h3>Programming with Java</h3>
+          <p>Mrs. Adjoa Sarpong · 4 Credits</p>
+          <div class="course-stats"><div><strong>6</strong>Assignments</div><div><strong>10</strong>Announcements</div><div><strong>17</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">CS 318</span>
+          <h3>Web Development II</h3>
+          <p>Mrs. Adjoa Sarpong · 3 Credits</p>
+          <div class="course-stats"><div><strong>5</strong>Assignments</div><div><strong>9</strong>Announcements</div><div><strong>14</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">CS 308</span>
+          <h3>Database Systems and Design</h3>
+          <p>Dr. Kofi Owusu · 3 Credits</p>
+          <div class="course-stats"><div><strong>5</strong>Assignments</div><div><strong>12</strong>Announcements</div><div><strong>18</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+        <div class="course-card">
+          <span class="course-code">CS 401</span>
+          <h3>Emerging Frontiers</h3>
+          <p>Dr. Nana Yeboah · 3 Credits</p>
+          <div class="course-stats"><div><strong>3</strong>Assignments</div><div><strong>7</strong>Announcements</div><div><strong>11</strong>Resources</div></div>
+          <a href="assignments.html" class="btn btn-outline btn-block">View Course</a>
+        </div>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

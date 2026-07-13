@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecturer Dashboard | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="lecturer.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Mrs. Adjoa Sarpong</span><small id="topbarUserRole">Lecturer · Software Eng.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>12 new submissions</strong><p>Testing Strategy Report — Software Engineering</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New student question</strong><p>Posted in CS 312 discussion</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Room change</strong><p>ICT Block 204 → 210, Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head">
+        <div><h1>Welcome back, Mrs. Sarpong 👋</h1><p class="text-muted">Here's your teaching overview for today.</p></div>
+        <a href="announcements.html" class="btn btn-primary">+ New Post</a>
+      </div>
+
+      <section class="stat-grid">
+        <div class="stat-card"><span class="stat-icon icon-calendar"></span><div><strong>3</strong><span>Today's Lectures</span></div></div>
+        <div class="stat-card"><span class="stat-icon icon-course"></span><div><strong>4</strong><span>Courses</span></div></div>
+        <div class="stat-card"><span class="stat-icon icon-assign"></span><div><strong>27</strong><span>Pending Grading</span></div></div>
+        <div class="stat-card"><span class="stat-icon icon-msg"></span><div><strong>186</strong><span>Total Students</span></div></div>
+      </section>
+
+      <div class="content-grid">
+        <div class="content-col-main">
+          <section class="panel">
+            <div class="panel-head"><h3>Today's Lectures</h3></div>
+            <div class="event-row"><div class="event-date"><strong>9</strong><span>AM</span></div><div><strong>Software Engineering</strong><p>ICT Block 210 · L300</p></div></div>
+            <div class="event-row"><div class="event-date gold"><strong>11</strong><span>AM</span></div><div><strong>Human-Computer Interaction</strong><p>ICT Block 105 · L400</p></div></div>
+            <div class="event-row"><div class="event-date"><strong>2</strong><span>PM</span></div><div><strong>Software Testing Lab</strong><p>Computer Lab 2 · L300</p></div></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h3>Recent Submissions</h3></div>
+            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Yaw Mensah</strong><p>Testing Strategy Report · submitted 10m ago</p><span class="qa-tag">Software Engineering</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
+            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Efua Nyarko</strong><p>Testing Strategy Report · submitted 25m ago</p><span class="qa-tag">Software Engineering</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
+            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Kwabena Boadi</strong><p>UI Prototype · submitted 1h ago</p><span class="qa-tag">HCI</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h3>Student Questions</h3></div>
+            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Ama Boateng</strong><p>"Can we use MongoDB instead of MySQL for the testing project?"</p><span class="qa-tag">Software Engineering</span></div></div>
+            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Nana Adjei</strong><p>"Is the wireframe due before or after the usability test?"</p><span class="qa-tag">HCI</span></div></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h3>Announcements Posted</h3></div>
+            <article class="post-card">
+              <div class="post-head"><span class="mock-avatar lg"></span><div class="post-meta"><strong>Mrs. Adjoa Sarpong</strong><span class="post-role">Lecturer · Software Engineering</span></div><span class="mock-badge badge-green">Academic</span></div>
+              <h4 class="post-title">Lecture materials for Week 9 uploaded</h4>
+              <div class="post-footer"><span>❤ 26</span><span>💬 3 comments</span><span class="post-date">Yesterday</span></div>
+            </article>
+          </section>
+        </div>
+
+        <aside class="content-col-side">
+          <section class="panel">
+            <div class="panel-head"><h3>Upcoming Deadlines</h3></div>
+            <div class="event-row"><div class="event-date"><strong>15</strong><span>JUL</span></div><div><strong>Testing Strategy Report Due</strong><p>Software Engineering</p></div></div>
+            <div class="event-row"><div class="event-date gold"><strong>20</strong><span>JUL</span></div><div><strong>UI Prototype Due</strong><p>Human-Computer Interaction</p></div></div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="lecturer.html" class="mobile-tab active"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

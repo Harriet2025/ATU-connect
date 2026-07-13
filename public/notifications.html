@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head">
+        <div><h1>Notification Center</h1><p class="text-muted">Everything that needs your attention.</p></div>
+        <button class="btn btn-outline" id="markAllReadBtn">Mark all as read</button>
+      </div>
+
+      <section class="panel" id="notifPanel">
+        <p class="text-muted">Loading notifications…</p>
+        <div class="notif-group-label" style="display:none;">Today</div>
+        <div class="notif-row-full high unread" style="display:none;">
+          <span class="notif-icon-full">📝</span>
+          <div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design Project is due Jul 13, 11:59pm.</p></div>
+          <time>10m ago</time>
+        </div>
+        <div class="notif-row-full medium unread">
+          <span class="notif-icon-full">📢</span>
+          <div><strong>New announcement posted</strong><p>HOD Dr. Kofi Owusu posted in Computer Science department feed.</p></div>
+          <time>1h ago</time>
+        </div>
+        <div class="notif-row-full low">
+          <span class="notif-icon-full">🚫</span>
+          <div><strong>Lecture cancelled</strong><p>Software Engineering — Thursday 9am session cancelled.</p></div>
+          <time>2h ago</time>
+        </div>
+        <div class="notif-row-full high unread">
+          <span class="notif-icon-full">📄</span>
+          <div><strong>New material uploaded</strong><p>Week 9 slides added to Software Engineering course page.</p></div>
+          <time>3h ago</time>
+        </div>
+
+        <div class="notif-group-label">Earlier</div>
+        <div class="notif-row-full medium">
+          <span class="notif-icon-full">🗓</span>
+          <div><strong>Exam timetable released</strong><p>Mid-semester exam timetable for all CS courses is now available.</p></div>
+          <time>Yesterday</time>
+        </div>
+        <div class="notif-row-full low">
+          <span class="notif-icon-full">💰</span>
+          <div><strong>Payment reminder</strong><p>Second-instalment fees are due by end of month.</p></div>
+          <time>2 days ago</time>
+        </div>
+        <div class="notif-row-full medium">
+          <span class="notif-icon-full">🧾</span>
+          <div><strong>Registration deadline approaching</strong><p>Course registration for next semester closes in 5 days.</p></div>
+          <time>3 days ago</time>
+        </div>
+        <div class="notif-row-full low">
+          <span class="notif-icon-full">💬</span>
+          <div><strong>New message</strong><p>Mrs. Adjoa Sarpong sent you a message.</p></div>
+          <time>4 days ago</time>
+        </div>
+      </section>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

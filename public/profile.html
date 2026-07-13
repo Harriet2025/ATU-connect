@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link active"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head"><div><h1>My Profile</h1><p class="text-muted">Your account details and preferences.</p></div></div>
+
+      <div class="profile-layout">
+        <div class="profile-card">
+          <div class="profile-avatar-wrap">
+            <span class="mock-avatar lg" id="profileAvatar" style="width:96px;height:96px;"></span>
+            <label class="avatar-upload-btn" for="avatarUploadInput" title="Change photo">📷</label>
+            <input type="file" id="avatarUploadInput" accept="image/*" hidden>
+          </div>
+          <h3 id="profileName">Ama Boateng</h3>
+          <p id="profileRole">Student · BSc. Computer Science</p>
+          <button class="btn btn-primary btn-block" id="editProfileBtn">Edit Profile</button>
+        </div>
+
+        <div>
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Personal Information</h3>
+              <div class="panel-head-actions" id="personalInfoActions">
+                <button class="btn btn-outline btn-sm" id="cancelInfoBtn" style="display:none;">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="saveInfoBtn" style="display:none;">Save Changes</button>
+              </div>
+            </div>
+            <p class="auth-error" id="profileSaveError" style="display:none;"></p>
+            <form class="info-grid" id="personalInfoForm">
+              <div class="info-item">
+                <span class="field-label">Full Name</span>
+                <input class="info-input" id="infoName" value="Ama Boateng" readonly>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Student ID <small class="text-muted">(contact Registrar to change)</small></span>
+                <input class="info-input" id="infoIdentifier" value="ATU/CS/22/0134" readonly data-readonly-always>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Programme</span>
+                <input class="info-input" id="infoProgramme" value="BSc. Computer Science" readonly>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Department</span>
+                <input class="info-input" id="infoDepartment" value="Computer Science" readonly data-readonly-always>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Level</span>
+                <select class="info-input" id="infoLevel" disabled>
+                  <option value="100">Level 100</option>
+                  <option value="200">Level 200</option>
+                  <option value="300" selected>Level 300</option>
+                  <option value="400">Level 400</option>
+                </select>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Student Email</span>
+                <input class="info-input" id="infoEmail" value="00934522B@st.atu.edu.gh" readonly>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Phone</span>
+                <input class="info-input" id="infoPhone" value="+233 24 123 4567" readonly>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Emergency Contact</span>
+                <input class="info-input" id="infoEmergencyContact" value="+233 20 987 6543" readonly>
+              </div>
+              <div class="info-item">
+                <span class="field-label">Academic Advisor</span>
+                <input class="info-input" id="infoAdvisor" value="Dr. Kofi Owusu" readonly data-readonly-always>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel" id="accountSettingsPanel">
+            <div class="panel-head"><h3>Account Settings</h3></div>
+            <label class="field-label">Current Password</label>
+            <input type="password" class="field-input" placeholder="••••••••">
+            <label class="field-label">New Password</label>
+            <input type="password" class="field-input" placeholder="••••••••">
+            <div style="margin-top:16px;">
+              <button class="btn btn-primary">Update Password</button>
+            </div>
+
+            <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+              <h4 style="font-size:.95rem; margin-bottom:6px;">Reminder & Notification Channels</h4>
+              <p class="text-muted" style="margin-bottom:12px;">Choose where you'd like to be reminded about assignment due dates and other alerts.</p>
+              <div class="toggle-row">
+                <div><strong>📧 Email</strong><p>Announcement digests and deadline reminders by email</p></div>
+                <label class="toggle-switch"><input type="checkbox" id="notifyEmailToggle" checked><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div><strong>💬 SMS</strong><p>Text message reminders for due dates and emergencies</p></div>
+                <label class="toggle-switch"><input type="checkbox" id="notifySmsToggle"><span class="toggle-slider"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div><strong>🟢 WhatsApp</strong><p>WhatsApp reminders for due dates and announcements</p></div>
+                <label class="toggle-switch"><input type="checkbox" id="notifyWhatsappToggle"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab active"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

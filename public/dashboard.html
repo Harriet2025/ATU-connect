@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand">
+      <span class="brand-mark">AC</span>
+      <span class="brand-name">ATU <em>Connect</em></span>
+    </a>
+
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link active">
+        <span class="side-icon icon-home"></span> Dashboard
+      </a>
+      <a href="announcements.html" class="side-link">
+        <span class="side-icon icon-announce"></span> Announcements
+      </a>
+      <a href="assignments.html" class="side-link">
+        <span class="side-icon icon-assign"></span> Assignments
+      </a>
+      <a href="courses.html" class="side-link">
+        <span class="side-icon icon-course"></span> Courses
+      </a>
+      <a href="messages.html" class="side-link">
+        <span class="side-icon icon-msg"></span> Messages
+        <span class="side-badge">3</span>
+      </a>
+      <a href="calendar.html" class="side-link">
+        <span class="side-icon icon-calendar"></span> Calendar
+      </a>
+      <a href="notice-board.html" class="side-link">
+        <span class="side-icon icon-board"></span> Notice Board
+      </a>
+      <a href="profile.html" class="side-link">
+        <span class="side-icon icon-profile"></span> Profile
+      </a>
+    </nav>
+
+    <div class="side-footer">
+      <a href="index.html" class="side-link logout" id="logoutLink">
+        <span class="side-icon icon-logout"></span> Log Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN AREA ===================== -->
+  <div class="app-main">
+
+    <!-- TOP NAV -->
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="topbar-search">
+        <input type="text" placeholder="Search announcements, courses, people…">
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn">
+          <span class="icon-bell"></span>
+          <span class="notif-dot"></span>
+        </button>
+        <a href="messages.html" class="icon-btn">
+          <span class="icon-msg-outline"></span>
+        </a>
+        <a href="profile.html" class="topbar-profile">
+          <span class="mock-avatar lg"></span>
+          <span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span>
+        </a>
+      </div>
+
+      <!-- Notification dropdown -->
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item">
+          <span class="dot-priority high"></span>
+          <div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div>
+        </div>
+        <div class="notif-item">
+          <span class="dot-priority med"></span>
+          <div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div>
+        </div>
+        <div class="notif-item">
+          <span class="dot-priority low"></span>
+          <div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div>
+        </div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="app-content">
+
+      <div class="content-head">
+        <div>
+          <h1>Welcome back, <span id="welcomeName">Ama</span> 👋</h1>
+          <p class="text-muted">Here's what's happening across your campus today.</p>
+        </div>
+        <a href="announcements.html" class="btn btn-primary">+ New Post</a>
+      </div>
+
+      <!-- QUICK STATS -->
+      <section class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-icon icon-announce"></span>
+          <div><strong>12</strong><span>New Announcements</span></div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon icon-assign"></span>
+          <div><strong>4</strong><span>Pending Assignments</span></div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon icon-msg"></span>
+          <div><strong>7</strong><span>Unread Messages</span></div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon icon-calendar"></span>
+          <div><strong>3</strong><span>Upcoming Events</span></div>
+        </div>
+      </section>
+
+      <div class="content-grid">
+
+        <!-- LEFT: ANNOUNCEMENTS + ASSIGNMENTS -->
+        <div class="content-col-main">
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Announcements Feed</h3>
+              <a href="announcements.html" class="link-muted">See all</a>
+            </div>
+
+            <article class="post-card pinned">
+              <div class="post-head">
+                <span class="mock-avatar lg"></span>
+                <div class="post-meta">
+                  <strong>Dr. Kofi Owusu</strong>
+                  <span class="post-role">HOD · Computer Science</span>
+                </div>
+                <span class="mock-badge badge-danger">Emergency</span>
+              </div>
+              <h4 class="post-title">Mid-semester exams timetable released</h4>
+              <p class="post-body">The mid-semester examination timetable for all Computer Science courses has been published. Please check your course pages for specific venues and times.</p>
+              <div class="post-footer">
+                <span>📌 Pinned</span>
+                <span>❤ 42</span>
+                <span>💬 8 comments</span>
+                <span class="post-date">2 hours ago</span>
+              </div>
+            </article>
+
+            <article class="post-card">
+              <div class="post-head">
+                <span class="mock-avatar lg"></span>
+                <div class="post-meta">
+                  <strong>SRC Executive Council</strong>
+                  <span class="post-role">SRC · Student Affairs</span>
+                </div>
+                <span class="mock-badge badge-gold">SRC</span>
+              </div>
+              <h4 class="post-title">Cultural Week registration now open</h4>
+              <p class="post-body">Register your department for this year's Cultural Week events. Deadline for registration is next Friday.</p>
+              <div class="post-footer">
+                <span>❤ 118</span>
+                <span>💬 21 comments</span>
+                <span class="post-date">5 hours ago</span>
+              </div>
+            </article>
+
+            <article class="post-card">
+              <div class="post-head">
+                <span class="mock-avatar lg"></span>
+                <div class="post-meta">
+                  <strong>Mrs. Adjoa Sarpong</strong>
+                  <span class="post-role">Lecturer · Software Engineering</span>
+                </div>
+                <span class="mock-badge badge-green">Academic</span>
+              </div>
+              <h4 class="post-title">Lecture materials for Week 9 uploaded</h4>
+              <p class="post-body">Slides and reading materials on Software Testing are now available on the course page.</p>
+              <div class="post-footer">
+                <span>❤ 26</span>
+                <span>💬 3 comments</span>
+                <span class="post-date">Yesterday</span>
+              </div>
+            </article>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Upcoming Assignments</h3>
+              <a href="assignments.html" class="link-muted">See all</a>
+            </div>
+
+            <div class="assign-card-row">
+              <div class="assign-card">
+                <span class="mock-badge badge-danger">Due Tomorrow</span>
+                <h4>ERD Design Project</h4>
+                <p>Database Systems · Dr. Kofi Owusu</p>
+                <div class="mock-progress"><div class="mock-progress-bar"></div></div>
+                <span class="progress-label">55% submitted</span>
+              </div>
+              <div class="assign-card">
+                <span class="mock-badge badge-gold">Due in 3 days</span>
+                <h4>Testing Strategy Report</h4>
+                <p>Software Engineering · Mrs. Adjoa Sarpong</p>
+                <div class="mock-progress"><div class="mock-progress-bar w80"></div></div>
+                <span class="progress-label">80% submitted</span>
+              </div>
+              <div class="assign-card">
+                <span class="mock-badge badge-green">Due next week</span>
+                <h4>Network Topology Design</h4>
+                <p>Computer Networks · Mr. Yaw Asante</p>
+                <div class="mock-progress"><div class="mock-progress-bar" style="width:20%"></div></div>
+                <span class="progress-label">20% submitted</span>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- RIGHT: CALENDAR + EVENTS + MESSAGES -->
+        <aside class="content-col-side">
+
+          <section class="panel">
+            <div class="panel-head"><h3>Calendar</h3><a href="calendar.html" class="link-muted">Open</a></div>
+            <div class="mini-cal">
+              <div class="mini-cal-head">July 2026</div>
+              <div class="mini-cal-grid">
+                <span class="dim">S</span><span class="dim">M</span><span class="dim">T</span><span class="dim">W</span><span class="dim">T</span><span class="dim">F</span><span class="dim">S</span>
+                <span></span><span></span><span></span><span></span><span></span><span></span><span>1</span>
+                <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                <span>9</span><span>10</span><span>11</span><span class="today">12</span><span>13</span><span>14</span><span>15</span>
+                <span>16</span><span>17</span><span class="mark">18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h3>Upcoming Events</h3></div>
+            <div class="event-row">
+              <div class="event-date"><strong>18</strong><span>JUL</span></div>
+              <div><strong>Mid-Sem Exams Begin</strong><p>All departments</p></div>
+            </div>
+            <div class="event-row">
+              <div class="event-date gold"><strong>21</strong><span>JUL</span></div>
+              <div><strong>SRC General Meeting</strong><p>Main Auditorium · 4pm</p></div>
+            </div>
+            <div class="event-row">
+              <div class="event-date"><strong>25</strong><span>JUL</span></div>
+              <div><strong>Guest Lecture: AI in Industry</strong><p>ICT Block · 10am</p></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h3>Messages</h3><a href="messages.html" class="link-muted">Open</a></div>
+            <div class="msg-row">
+              <span class="mock-avatar lg online"></span>
+              <div><strong>Dr. Kofi Owusu</strong><p>Please resubmit the ERD file…</p></div>
+              <span class="msg-time">2m</span>
+            </div>
+            <div class="msg-row unread">
+              <span class="mock-avatar lg"></span>
+              <div><strong>CS Level 300 Group</strong><p>Yaw: Anyone free to study?</p></div>
+              <span class="msg-time">14m</span>
+            </div>
+            <div class="msg-row">
+              <span class="mock-avatar lg online"></span>
+              <div><strong>Mrs. Adjoa Sarpong</strong><p>Good work on the last submission.</p></div>
+              <span class="msg-time">1h</span>
+            </div>
+          </section>
+
+        </aside>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab active"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

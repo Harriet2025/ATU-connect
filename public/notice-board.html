@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notice Board | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link active"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head"><div><h1>Notice Board</h1><p class="text-muted">Official notices from every department and office.</p></div></div>
+
+      <div class="filter-bar">
+        <span class="chip active">All</span>
+        <span class="chip">Academic</span>
+        <span class="chip">Department</span>
+        <span class="chip">Events</span>
+        <span class="chip chip-danger">Emergency</span>
+        <span class="chip">Exams</span>
+        <div class="search-bar"><input type="text" id="noticeSearch" placeholder="Search notices…"></div>
+      </div>
+
+      <div class="notice-grid" id="noticeGrid">
+        <p class="text-muted">Loading notices…</p>
+        <div class="notice-card pinned" style="display:none;">
+          <div class="notice-pin">📌 Pinned</div>
+          <h4>Mid-semester exams timetable released</h4>
+          <p>Timetable for all CS courses is now published on the exams portal.</p>
+          <div class="notice-meta">Registrar's Office · Jul 10, 2026</div>
+          <a href="#" class="notice-download">⬇ Download timetable.pdf</a>
+        </div>
+
+        <div class="notice-card urgent">
+          <h4>Campus closed tomorrow due to flooding</h4>
+          <p>All lectures and campus activities suspended tomorrow following heavy rains.</p>
+          <div class="notice-meta">Registrar's Office · Jul 11, 2026</div>
+        </div>
+
+        <div class="notice-card dept">
+          <h4>Departmental meeting rescheduled</h4>
+          <p>L400 meeting moved to Monday, 2pm, Seminar Room B.</p>
+          <div class="notice-meta">Computer Science Dept. · Jul 9, 2026</div>
+        </div>
+
+        <div class="notice-card pinned">
+          <div class="notice-pin">📌 Pinned</div>
+          <h4>New academic calendar for 2026/2027</h4>
+          <p>Full academic calendar including resumption and vacation dates is now available.</p>
+          <div class="notice-meta">Academic Affairs · Jul 5, 2026</div>
+          <a href="#" class="notice-download">⬇ Download calendar.pdf</a>
+        </div>
+
+        <div class="notice-card events">
+          <h4>Cultural Week registration open</h4>
+          <p>Register your department for this year's Cultural Week events by Friday.</p>
+          <div class="notice-meta">SRC Executive Council · Jul 8, 2026</div>
+        </div>
+
+        <div class="notice-card exams">
+          <h4>Exam registration closes Friday</h4>
+          <p>Students who have not registered must do so before Friday 5pm.</p>
+          <div class="notice-meta">Examinations Office · Jul 8, 2026</div>
+          <a href="#" class="notice-download">⬇ Download exam-guide.pdf</a>
+        </div>
+
+        <div class="notice-card urgent">
+          <h4>Water supply interruption — ICT Block</h4>
+          <p>Maintenance work will interrupt water supply to the ICT Block on Wednesday.</p>
+          <div class="notice-meta">Estates Department · Jul 7, 2026</div>
+        </div>
+
+        <div class="notice-card dept">
+          <h4>New library opening hours for exam period</h4>
+          <p>Main library open 24 hours during the mid-semester exam period.</p>
+          <div class="notice-meta">Library Services · Jul 6, 2026</div>
+        </div>
+
+        <div class="notice-card">
+          <h4>MTN Foundation Scholarship applications open</h4>
+          <p>Final-year students with CGPA 3.5+ can apply before August 10.</p>
+          <div class="notice-meta">Scholarships Office · Jul 4, 2026</div>
+          <a href="#" class="notice-download">⬇ Download application-form.pdf</a>
+        </div>
+
+        <div class="notice-card events">
+          <h4>Guest Lecture: AI in Industry — July 25</h4>
+          <p>Industry experts discuss applied AI. ICT Block Auditorium, 10am.</p>
+          <div class="notice-meta">Faculty of Engineering · Jul 3, 2026</div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

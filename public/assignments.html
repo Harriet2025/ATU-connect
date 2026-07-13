@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignments | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+<div class="app-shell">
+  <aside class="app-sidebar" id="appSidebar">
+    <a href="dashboard.html" class="brand app-brand"><span class="brand-mark">AC</span><span class="brand-name">ATU <em>Connect</em></span></a>
+    <nav class="side-nav">
+      <a href="dashboard.html" class="side-link"><span class="side-icon icon-home"></span> Dashboard</a>
+      <a href="announcements.html" class="side-link"><span class="side-icon icon-announce"></span> Announcements</a>
+      <a href="assignments.html" class="side-link active"><span class="side-icon icon-assign"></span> Assignments</a>
+      <a href="courses.html" class="side-link"><span class="side-icon icon-course"></span> Courses</a>
+      <a href="messages.html" class="side-link"><span class="side-icon icon-msg"></span> Messages<span class="side-badge">3</span></a>
+      <a href="calendar.html" class="side-link"><span class="side-icon icon-calendar"></span> Calendar</a>
+      <a href="notice-board.html" class="side-link"><span class="side-icon icon-board"></span> Notice Board</a>
+      <a href="profile.html" class="side-link"><span class="side-icon icon-profile"></span> Profile</a>
+    </nav>
+    <div class="side-footer"><a href="index.html" class="side-link logout" id="logoutLink"><span class="side-icon icon-logout"></span> Log Out</a></div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-topbar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar"><span></span><span></span><span></span></button>
+      <div class="topbar-search"><input type="text" placeholder="Search announcements, courses, people…"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="notifBtn"><span class="icon-bell"></span><span class="notif-dot"></span></button>
+        <a href="messages.html" class="icon-btn"><span class="icon-msg-outline"></span></a>
+        <a href="profile.html" class="topbar-profile"><span class="mock-avatar lg" id="topbarAvatar"></span><span class="topbar-profile-name"><span id="topbarUserName">Ama Boateng</span><small id="topbarUserRole">Student · CS Dept.</small></span></a>
+      </div>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown-head">Notifications</div>
+        <div class="notif-item"><span class="dot-priority high"></span><div><strong>Assignment deadline tomorrow</strong><p>Database Systems — ERD Design</p></div></div>
+        <div class="notif-item"><span class="dot-priority med"></span><div><strong>New announcement</strong><p>HOD posted in Computer Science</p></div></div>
+        <div class="notif-item"><span class="dot-priority low"></span><div><strong>Lecture cancelled</strong><p>Software Engineering — Thu 9am</p></div></div>
+        <a href="notifications.html" class="notif-viewall">View all notifications</a>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="content-head">
+        <div><h1>Assignments</h1><p class="text-muted">Track submissions, deadlines and grading in one place.</p></div>
+      </div>
+
+      <div class="view-tabs">
+        <span class="view-tab active" data-view="myAssignmentsView">My Assignments</span>
+        <span class="view-tab" data-view="manageView">Manage</span>
+      </div>
+
+      <div class="view-panel active" id="myAssignmentsView">
+        <div class="assign-grid" id="myAssignmentsGrid">
+          <p class="text-muted">Loading assignments…</p>
+          <div class="assign-card-full" style="display:none;">
+            <div class="assign-top"><div><h4>ERD Design Project</h4><p>Database Systems · Dr. Kofi Owusu</p><p>Due: Jul 13, 11:59pm</p></div><span class="mock-badge badge-danger">Not Submitted</span></div>
+            <div class="assign-foot"><span class="text-muted">55% of class submitted</span><button class="btn btn-primary">Upload</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Testing Strategy Report</h4><p>Software Engineering · Mrs. Adjoa Sarpong</p><p>Due: Jul 15, 11:59pm</p></div><span class="mock-badge badge-green">Submitted</span></div>
+            <div class="assign-foot"><span class="text-muted">Awaiting grading</span><button class="btn btn-outline">View Submission</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Network Topology Design</h4><p>Computer Networks · Mr. Yaw Asante</p><p>Due: Jul 8, 11:59pm</p></div><span class="mock-badge badge-danger">Late</span></div>
+            <div class="assign-foot"><span class="text-muted">Submitted 2 days late</span><button class="btn btn-outline">View Submission</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Algorithms Problem Set 4</h4><p>Data Structures · Dr. Kofi Owusu</p><p>Due: Jul 2, 11:59pm</p></div><span class="mock-badge badge-gold">Graded: A</span></div>
+            <div class="assign-foot"><span class="text-muted">Feedback available</span><button class="btn btn-outline">View Feedback</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Database Normalization Quiz</h4><p>Database Systems · Dr. Kofi Owusu</p><p>Due: Jun 28, 11:59pm</p></div><span class="mock-badge badge-gold">Graded: B+</span></div>
+            <div class="assign-foot"><span class="text-muted">Feedback available</span><button class="btn btn-outline">View Feedback</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>UI Prototype Submission</h4><p>Human-Computer Interaction · Mrs. Adjoa Sarpong</p><p>Due: Jul 20, 11:59pm</p></div><span class="mock-badge badge-danger">Not Submitted</span></div>
+            <div class="assign-foot"><span class="text-muted">20% of class submitted</span><button class="btn btn-primary">Upload</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-panel" id="manageView">
+        <div class="assign-grid" id="manageAssignmentsGrid">
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>ERD Design Project</h4><p>Database Systems · Level 300</p><p>Due: Jul 13, 11:59pm</p></div><div class="assign-icon-actions"><button title="Edit">✎</button><button title="Delete">🗑</button></div></div>
+            <div class="mock-progress"><div class="mock-progress-bar" style="width:55%"></div></div>
+            <div class="assign-foot"><span class="text-muted">33 / 60 submitted</span><button class="btn btn-primary">View Submissions</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Algorithms Problem Set 4</h4><p>Data Structures · Level 200</p><p>Due: Jul 2, 11:59pm</p></div><div class="assign-icon-actions"><button title="Edit">✎</button><button title="Delete">🗑</button></div></div>
+            <div class="mock-progress"><div class="mock-progress-bar w80"></div></div>
+            <div class="assign-foot"><span class="text-muted">48 / 60 submitted</span><button class="btn btn-primary">View Submissions</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>Database Normalization Quiz</h4><p>Database Systems · Level 300</p><p>Closed</p></div><div class="assign-icon-actions"><button title="Edit">✎</button><button title="Delete">🗑</button></div></div>
+            <div class="mock-progress"><div class="mock-progress-bar" style="width:100%; background:var(--success);"></div></div>
+            <div class="assign-foot"><span class="text-muted">60 / 60 submitted · all graded</span><button class="btn btn-outline">View Submissions</button></div>
+          </div>
+          <div class="assign-card-full">
+            <div class="assign-top"><div><h4>UI Prototype Submission</h4><p>Human-Computer Interaction · Level 400</p><p>Due: Jul 20, 11:59pm</p></div><div class="assign-icon-actions"><button title="Edit">✎</button><button title="Delete">🗑</button></div></div>
+            <div class="mock-progress"><div class="mock-progress-bar" style="width:20%"></div></div>
+            <div class="assign-foot"><span class="text-muted">9 / 45 submitted</span><button class="btn btn-primary">View Submissions</button></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="mobile-tabbar">
+      <a href="dashboard.html" class="mobile-tab"><span class="mobile-tab-icon">🏠</span>Home</a>
+      <a href="announcements.html" class="mobile-tab"><span class="mobile-tab-icon">📢</span>News</a>
+      <a href="assignments.html" class="mobile-tab active"><span class="mobile-tab-icon">📝</span>Tasks</a>
+      <a href="messages.html" class="mobile-tab"><span class="mobile-tab-icon">💬</span>Chat</a>
+      <a href="profile.html" class="mobile-tab"><span class="mobile-tab-icon">👤</span>Profile</a>
+    </nav>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

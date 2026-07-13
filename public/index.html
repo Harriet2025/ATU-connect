@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATU Connect | University Communication & Collaboration Platform</title>
+<meta name="description" content="ATU Connect — the official communication and academic collaboration platform for Accra Technical University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== TOP NAVIGATION ===================== -->
+<header class="landing-nav" id="landingNav">
+  <div class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">AC</span>
+      <span class="brand-name">ATU <em>Connect</em></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#roles">Who it's for</a>
+      <a href="#preview">Preview</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Log In</a>
+      <a href="login.html#register" class="btn btn-primary">Get Started</a>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-container">
+      <div class="hero-copy">
+        <span class="pill pill-gold">Built for Accra Technical University</span>
+        <h1>One platform for every campus conversation.</h1>
+        <p class="hero-sub">
+          Announcements, assignments, messaging, and notices — replacing scattered WhatsApp
+          and Telegram groups with a single, secure workspace for students, lecturers, and
+          university leadership.
+        </p>
+        <div class="hero-cta">
+          <a href="login.html#register" class="btn btn-primary btn-lg">Create an account</a>
+          <a href="login.html" class="btn btn-outline btn-lg">Sign in</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>6</strong><span>Role dashboards</span></div>
+          <div class="hero-stat"><strong>24/7</strong><span>Live notifications</span></div>
+          <div class="hero-stat"><strong>1</strong><span>Unified inbox</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="mock-window mock-primary">
+          <div class="mock-titlebar">
+            <span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span>
+            <span class="mock-title">ATU Connect — Dashboard</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-sidebar">
+              <div class="mock-side-item active"></div>
+              <div class="mock-side-item"></div>
+              <div class="mock-side-item"></div>
+              <div class="mock-side-item"></div>
+              <div class="mock-side-item"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-card mock-card-wide">
+                <span class="mock-badge badge-danger">Emergency</span>
+                <div class="mock-line w70"></div>
+                <div class="mock-line w40"></div>
+              </div>
+              <div class="mock-card">
+                <span class="mock-badge badge-gold">Exams</span>
+                <div class="mock-line w80"></div>
+                <div class="mock-line w60"></div>
+              </div>
+              <div class="mock-card">
+                <span class="mock-badge badge-green">Academic</span>
+                <div class="mock-line w80"></div>
+                <div class="mock-line w50"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mock-window mock-float mock-messages">
+          <div class="mock-titlebar sm">
+            <span class="mock-title">Messages</span>
+          </div>
+          <div class="mock-chat-row"><span class="mock-avatar"></span><div class="mock-line w70"></div></div>
+          <div class="mock-chat-row"><span class="mock-avatar"></span><div class="mock-line w50"></div></div>
+          <div class="mock-typing"><span></span><span></span><span></span> typing…</div>
+        </div>
+
+        <div class="mock-window mock-float mock-notif">
+          <div class="mock-notif-row"><span class="dot-priority high"></span><div class="mock-line w80"></div></div>
+          <div class="mock-notif-row"><span class="dot-priority med"></span><div class="mock-line w60"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LOGO STRIP ===================== -->
+  <section class="logo-strip">
+    <p>Trusted across every corner of campus life</p>
+    <div class="logo-strip-items">
+      <span>Faculty of Engineering</span>
+      <span>Student Representative Council</span>
+      <span>School of Applied Sciences</span>
+      <span>Business School</span>
+      <span>Office of the Registrar</span>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURES ===================== -->
+  <section class="features" id="features">
+    <div class="section-head">
+      <span class="pill pill-blue">Platform</span>
+      <h2>Everything campus communication needs, in one place</h2>
+      <p>ATU Connect brings together the tools students and staff currently piece together
+         across group chats, notice boards, and email.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-announce"></div>
+        <h3>Announcements Feed</h3>
+        <p>Priority-tagged, categorized posts from lecturers, HODs, SRC, and admin — with likes, comments, and pinning.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-assign"></div>
+        <h3>Assignment Portal</h3>
+        <p>Submit, track, and grade coursework with deadlines, resubmissions, and instant status updates.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-msg"></div>
+        <h3>Real-Time Messaging</h3>
+        <p>Slack-style conversations with typing indicators, read receipts, and file sharing.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-notif"></div>
+        <h3>Smart Notifications</h3>
+        <p>Never miss a deadline, cancelled lecture, or exam timetable release again.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-calendar"></div>
+        <h3>Unified Calendar</h3>
+        <p>Exams, department meetings, SRC events, and holidays in a single academic calendar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-board"></div>
+        <h3>Digital Notice Board</h3>
+        <p>The physical notice board, reimagined — searchable, color-coded, and always up to date.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ROLES ===================== -->
+  <section class="roles" id="roles">
+    <div class="section-head">
+      <span class="pill pill-gold">Built for every role</span>
+      <h2>A dashboard tailored to what you do on campus</h2>
+    </div>
+
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-icon">🎓</div>
+        <h4>Student</h4>
+        <p>Track courses, assignments, and announcements in one feed.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🧑‍🏫</div>
+        <h4>Lecturer</h4>
+        <p>Post materials, manage assignments, and message classes.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🏛️</div>
+        <h4>HOD</h4>
+        <p>Publish department-wide notices and monitor academic activity.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">📋</div>
+        <h4>Department Executive</h4>
+        <p>Coordinate communication between students and faculty.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">📣</div>
+        <h4>SRC Executive</h4>
+        <p>Broadcast school-wide events and student affairs updates.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🛡️</div>
+        <h4>Administration</h4>
+        <p>Oversee platform activity with full analytics and controls.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PREVIEW ===================== -->
+  <section class="preview" id="preview">
+    <div class="section-head">
+      <span class="pill pill-blue">A closer look</span>
+      <h2>Designed like the tools you already know</h2>
+      <p>Familiar patterns from Teams, Slack, and Classroom — tuned for university life.</p>
+    </div>
+
+    <div class="preview-grid">
+      <div class="preview-frame">
+        <div class="mock-titlebar sm"><span class="mock-title">Announcements</span></div>
+        <div class="mock-post">
+          <span class="mock-avatar lg"></span>
+          <div class="mock-post-body">
+            <div class="mock-line w40"></div>
+            <div class="mock-line w25 dim"></div>
+            <div class="mock-line w90"></div>
+            <div class="mock-line w70"></div>
+            <span class="mock-badge badge-danger">Emergency</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-frame">
+        <div class="mock-titlebar sm"><span class="mock-title">Assignments</span></div>
+        <div class="mock-assign-card">
+          <div class="mock-line w60"></div>
+          <div class="mock-line w30 dim"></div>
+          <div class="mock-progress"><div class="mock-progress-bar"></div></div>
+        </div>
+        <div class="mock-assign-card">
+          <div class="mock-line w50"></div>
+          <div class="mock-line w30 dim"></div>
+          <div class="mock-progress"><div class="mock-progress-bar w80"></div></div>
+        </div>
+      </div>
+      <div class="preview-frame">
+        <div class="mock-titlebar sm"><span class="mock-title">Calendar</span></div>
+        <div class="mock-cal-grid">
+          <span></span><span></span><span class="on"></span><span></span>
+          <span></span><span class="on gold"></span><span></span><span></span>
+          <span></span><span></span><span></span><span class="on"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT / CTA ===================== -->
+  <section class="cta" id="about">
+    <div class="cta-box">
+      <h2>Bring your campus into one connected workspace.</h2>
+      <p>Join ATU Connect and replace scattered group chats with one secure, official channel.</p>
+      <div class="hero-cta">
+        <a href="login.html#register" class="btn btn-primary btn-lg">Create an account</a>
+        <a href="login.html" class="btn btn-outline-light btn-lg">Sign in</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <span class="brand-mark">AC</span>
+      <span class="brand-name">ATU <em>Connect</em></span>
+      <p>The internal communication platform of Accra Technical University.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <a href="#features">Features</a>
+        <a href="#roles">Roles</a>
+        <a href="#preview">Preview</a>
+      </div>
+      <div class="footer-col">
+        <h5>Account</h5>
+        <a href="login.html">Log In</a>
+        <a href="login.html#register">Register</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Help Center</a>
+        <a href="#">Contact IT Support</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ATU Connect. Internal platform of Accra Technical University.</span>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

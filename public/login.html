@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In | ATU Connect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1a3c">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+
+<header class="landing-nav">
+  <div class="nav-container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">AC</span>
+      <span class="brand-name">ATU <em>Connect</em></span>
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn btn-ghost">&larr; Back to home</a>
+    </div>
+  </div>
+</header>
+
+<main class="auth-main">
+  <div class="auth-shell">
+
+    <!-- ===================== LEFT PANEL ===================== -->
+    <aside class="auth-side">
+      <div class="auth-side-glow"></div>
+      <span class="pill pill-gold">Accra Technical University</span>
+      <h2>All your campus channels, in one secure sign-in.</h2>
+      <p>Pick a role to see the dashboard built for you — announcements, assignments, messaging and more.</p>
+
+      <ul class="auth-role-preview">
+        <li><span class="role-dot dot-student"></span> Student dashboard with courses & assignments</li>
+        <li><span class="role-dot dot-lecturer"></span> Lecturer tools for grading & materials</li>
+        <li><span class="role-dot dot-admin"></span> Admin analytics across the whole platform</li>
+      </ul>
+    </aside>
+
+    <!-- ===================== RIGHT PANEL / FORMS ===================== -->
+    <section class="auth-panel">
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Log In</button>
+        <button class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <!-- ---------- LOG IN FORM ---------- -->
+      <form class="auth-form" id="loginForm" data-panel="login">
+        <h1>Welcome back</h1>
+        <p class="auth-sub">Choose your role and sign in to continue.</p>
+
+        <label class="field-label">I am signing in as</label>
+        <div class="role-grid role-grid-quick" id="loginRoleGrid">
+          <button type="button" class="role-chip active" data-role="student">🎓<span>Student</span></button>
+          <button type="button" class="role-chip" data-role="lecturer">🧑‍🏫<span>Lecturer</span></button>
+          <button type="button" class="role-chip" data-role="hod">🏛️<span>HOD</span></button>
+        </div>
+        <select class="field-input role-select" id="loginRoleSelect">
+          <option value="student">🎓 Student</option>
+          <option value="lecturer">🧑‍🏫 Lecturer</option>
+          <option value="dept-exec">📋 Departmental Executive</option>
+          <option value="src-exec">📣 SRC Executive</option>
+          <option value="jcrc-exec">🏠 JCRC (Hall) Executive</option>
+          <option value="faculty-exec">🎖️ Faculty Executive</option>
+          <option value="hod">🏛️ Head of Department (HOD)</option>
+          <option value="faculty-dean">🎓 Faculty Dean</option>
+          <option value="registrar">📜 The Registrar's Office</option>
+          <option value="student-affairs">🧑‍🎓 Student Affairs</option>
+          <option value="university-management">🏢 University Management</option>
+          <option value="admin">🛡️ Administrator</option>
+        </select>
+
+        <label class="field-label" for="loginId">Student / Staff ID or Email</label>
+        <input class="field-input" type="text" id="loginId" placeholder="e.g. ATU/2024/00123 or name@atu.edu.gh" required>
+
+        <label class="field-label" for="loginPass">Password</label>
+        <input class="field-input" type="password" id="loginPass" placeholder="Enter your password" required>
+
+        <div class="field-row-between">
+          <label class="checkbox-label">
+            <input type="checkbox"> Remember me
+          </label>
+          <a href="#" class="link-muted">Forgot password?</a>
+        </div>
+
+        <p class="auth-error" id="loginError" style="display:none;"></p>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In</button>
+        <p class="auth-switch">Don't have an account? <a href="#" class="switch-to-register">Register here</a></p>
+      </form>
+
+      <!-- ---------- REGISTER FORM ---------- -->
+      <form class="auth-form" id="registerForm" data-panel="register" style="display:none;">
+        <h1>Create your account</h1>
+        <p class="auth-sub">Register with your official university credentials.</p>
+
+        <label class="field-label">I am registering as</label>
+        <div class="role-grid role-grid-quick" id="registerRoleGrid">
+          <button type="button" class="role-chip active" data-role="student">🎓<span>Student</span></button>
+          <button type="button" class="role-chip" data-role="lecturer">🧑‍🏫<span>Lecturer</span></button>
+          <button type="button" class="role-chip" data-role="hod">🏛️<span>HOD</span></button>
+        </div>
+        <select class="field-input role-select" id="registerRoleSelect">
+          <option value="student">🎓 Student</option>
+          <option value="lecturer">🧑‍🏫 Lecturer</option>
+          <option value="dept-exec">📋 Departmental Executive</option>
+          <option value="src-exec">📣 SRC Executive</option>
+          <option value="jcrc-exec">🏠 JCRC (Hall) Executive</option>
+          <option value="faculty-exec">🎖️ Faculty Executive</option>
+          <option value="hod">🏛️ Head of Department (HOD)</option>
+          <option value="faculty-dean">🎓 Faculty Dean</option>
+          <option value="registrar">📜 The Registrar's Office</option>
+          <option value="student-affairs">🧑‍🎓 Student Affairs</option>
+          <option value="university-management">🏢 University Management</option>
+          <option value="admin">🛡️ Administrator</option>
+        </select>
+
+        <label class="field-label" for="regName">Full Name</label>
+        <input class="field-input" type="text" id="regName" placeholder="e.g. Kwame Mensah" required>
+
+        <label class="field-label" for="regId">Student / Staff ID</label>
+        <input class="field-input" type="text" id="regId" placeholder="e.g. ATU/2024/00123" required>
+
+        <div id="regLevelGroup">
+          <label class="field-label" for="regLevel">Level</label>
+          <select class="field-input" id="regLevel">
+            <option value="100">Level 100</option>
+            <option value="200">Level 200</option>
+            <option value="300" selected>Level 300</option>
+            <option value="400">Level 400</option>
+          </select>
+        </div>
+
+        <label class="field-label" for="regEmail" id="regEmailLabel">Student Email</label>
+        <input class="field-input" type="email" id="regEmail" placeholder="e.g. 00934522B@st.atu.edu.gh" pattern="^[A-Za-z0-9]+@st\.atu\.edu\.gh$" title="Format: yourStudentID@st.atu.edu.gh (e.g. 00934522B@st.atu.edu.gh)" required>
+
+        <label class="field-label" for="regPhone">Phone Number</label>
+        <input class="field-input" type="tel" id="regPhone" placeholder="e.g. 024 123 4567" required>
+
+        <label class="field-label" for="regPass">Password</label>
+        <input class="field-input" type="password" id="regPass" placeholder="Create a password" required>
+
+        <label class="field-label">Notify me about reminders and updates via</label>
+        <div class="notify-channel-row">
+          <label class="notify-chip"><input type="checkbox" id="notifyEmail" checked> 📧 Email</label>
+          <label class="notify-chip"><input type="checkbox" id="notifySms"> 💬 SMS</label>
+          <label class="notify-chip"><input type="checkbox" id="notifyWhatsapp"> 🟢 WhatsApp</label>
+        </div>
+
+        <label class="checkbox-label field-row-between" style="margin-top:18px;">
+          <span><input type="checkbox" required> I agree to the platform's terms & conduct policy</span>
+        </label>
+
+        <p class="auth-error" id="registerError" style="display:none;"></p>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+        <p class="auth-switch">Already have an account? <a href="#" class="switch-to-login">Log in here</a></p>
+      </form>
+
+    </section>
+  </div>
+</main>
+
+<script src="js/script.js"></script>
+</body>
+</html>
