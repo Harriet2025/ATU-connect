@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  initPasswordToggles();
   initAuthPage();
   initAppShell();
   initSessionUser();
@@ -194,7 +195,20 @@ document.addEventListener('DOMContentLoaded', () => {
 async function refreshSessionFromServer() {
   try {
     const res = await apiFetch('profile');
-    if (!res.ok || !res.data?.success) return;
+    if (!res.ok || !res.data?.success) {
+      // A 401 here specifically means "no valid session" (this is the one
+      // endpoint whose whole job is checking identity) — bounce to login
+      // instead of leaving every panel stuck on a misleading "could not
+      // load" message. login.html/index.html call this same check to see
+      // whether a session already exists, so skip the redirect there to
+      // avoid a loop.
+      if (res.status === 401) {
+        const path = location.pathname.split('/').pop();
+        const isPublicPage = path === '' || path === 'login.html' || path === 'index.html';
+        if (!isPublicPage) location.href = 'login.html';
+      }
+      return;
+    }
     const existing = getCurrentUser() || {};
     const merged = mergeUser(existing, mapServerUserToLocal(res.data.data, existing.roleLabel, existing.role));
     setCurrentUser(merged);
@@ -202,6 +216,22 @@ async function refreshSessionFromServer() {
   } catch {
     // offline or unreachable — keep whatever was already rendered from cache
   }
+}
+
+// =========================================================
+// PASSWORD SHOW/HIDE TOGGLE (login.html)
+// =========================================================
+function initPasswordToggles() {
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    const input = document.getElementById(btn.dataset.target);
+    if (!input) return;
+    btn.addEventListener('click', () => {
+      const showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      btn.textContent = showing ? '👁' : '🙈';
+      btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    });
+  });
 }
 
 // =========================================================

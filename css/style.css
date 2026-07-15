@@ -529,6 +529,17 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 .field-input:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 4px var(--blue-100); background:#fff; }
 .field-input.field-input-error{ border-color:var(--danger); background:var(--danger-bg); }
 .field-error-msg{ color:var(--danger); font-size:.78rem; margin-top:6px; }
+
+.password-field{ position:relative; }
+.password-field .field-input{ padding-right:44px; }
+.password-toggle{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  width:32px; height:32px; border:none; background:transparent; cursor:pointer;
+  font-size:1.05rem; line-height:1; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-500);
+}
+.password-toggle:hover{ background:var(--surface-2); }
 .auth-error{ color:var(--danger); background:var(--danger-bg); border:1px solid var(--danger); border-radius:var(--radius-sm); padding:10px 14px; font-size:.85rem; margin-top:14px; }
 
 .role-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }

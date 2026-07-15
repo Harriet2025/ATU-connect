@@ -50,7 +50,7 @@
 
     <main class="app-content">
       <div class="content-head">
-        <div><h1>Welcome back, Mrs. Sarpong 👋</h1><p class="text-muted">Here's your teaching overview for today.</p></div>
+        <div><h1>Welcome back, <span id="welcomeName">Lecturer</span> 👋</h1><p class="text-muted">Here's your teaching overview for today.</p></div>
         <a href="announcements.html" class="btn btn-primary">+ New Post</a>
       </div>
 
@@ -64,40 +64,20 @@
       <div class="content-grid">
         <div class="content-col-main">
           <section class="panel">
-            <div class="panel-head"><h3>Today's Lectures</h3></div>
-            <div class="event-row"><div class="event-date"><strong>9</strong><span>AM</span></div><div><strong>Software Engineering</strong><p>ICT Block 210 · L300</p></div></div>
-            <div class="event-row"><div class="event-date gold"><strong>11</strong><span>AM</span></div><div><strong>Human-Computer Interaction</strong><p>ICT Block 105 · L400</p></div></div>
-            <div class="event-row"><div class="event-date"><strong>2</strong><span>PM</span></div><div><strong>Software Testing Lab</strong><p>Computer Lab 2 · L300</p></div></div>
+            <div class="panel-head"><h3>Manage Assignments</h3><a href="assignments.html" class="link-muted">See all</a></div>
+            <div class="assign-card-row" id="manageAssignmentsGrid"><p class="text-muted">Loading assignments…</p></div>
           </section>
 
           <section class="panel">
-            <div class="panel-head"><h3>Recent Submissions</h3></div>
-            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Yaw Mensah</strong><p>Testing Strategy Report · submitted 10m ago</p><span class="qa-tag">Software Engineering</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
-            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Efua Nyarko</strong><p>Testing Strategy Report · submitted 25m ago</p><span class="qa-tag">Software Engineering</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
-            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Kwabena Boadi</strong><p>UI Prototype · submitted 1h ago</p><span class="qa-tag">HCI</span></div><span class="mock-badge badge-gold">Pending Grade</span></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-head"><h3>Student Questions</h3></div>
-            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Ama Boateng</strong><p>"Can we use MongoDB instead of MySQL for the testing project?"</p><span class="qa-tag">Software Engineering</span></div></div>
-            <div class="qa-row"><span class="mock-avatar lg"></span><div><strong>Nana Adjei</strong><p>"Is the wireframe due before or after the usability test?"</p><span class="qa-tag">HCI</span></div></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-head"><h3>Announcements Posted</h3></div>
-            <article class="post-card">
-              <div class="post-head"><span class="mock-avatar lg"></span><div class="post-meta"><strong>Mrs. Adjoa Sarpong</strong><span class="post-role">Lecturer · Software Engineering</span></div><span class="mock-badge badge-green">Academic</span></div>
-              <h4 class="post-title">Lecture materials for Week 9 uploaded</h4>
-              <div class="post-footer"><span>❤ 26</span><span>💬 3 comments</span><span class="post-date">Yesterday</span></div>
-            </article>
+            <div class="panel-head"><h3>Announcements Posted</h3><a href="announcements.html" class="link-muted">See all</a></div>
+            <div id="announcementsList"><p class="text-muted">Loading announcements…</p></div>
           </section>
         </div>
 
         <aside class="content-col-side">
           <section class="panel">
-            <div class="panel-head"><h3>Upcoming Deadlines</h3></div>
-            <div class="event-row"><div class="event-date"><strong>15</strong><span>JUL</span></div><div><strong>Testing Strategy Report Due</strong><p>Software Engineering</p></div></div>
-            <div class="event-row"><div class="event-date gold"><strong>20</strong><span>JUL</span></div><div><strong>UI Prototype Due</strong><p>Human-Computer Interaction</p></div></div>
+            <div class="panel-head"><h3>My Courses</h3><a href="courses.html" class="link-muted">See all</a></div>
+            <div class="course-grid" id="coursesGrid"><p class="text-muted">Loading courses…</p></div>
           </section>
         </aside>
       </div>

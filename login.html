@@ -81,7 +81,10 @@
         <input class="field-input" type="text" id="loginId" placeholder="e.g. ATU/2024/00123 or name@atu.edu.gh" required>
 
         <label class="field-label" for="loginPass">Password</label>
-        <input class="field-input" type="password" id="loginPass" placeholder="Enter your password" required>
+        <div class="password-field">
+          <input class="field-input" type="password" id="loginPass" placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" data-target="loginPass" aria-label="Show password">👁</button>
+        </div>
 
         <div class="field-row-between">
           <label class="checkbox-label">
@@ -144,7 +147,10 @@
         <input class="field-input" type="tel" id="regPhone" placeholder="e.g. 024 123 4567" required>
 
         <label class="field-label" for="regPass">Password</label>
-        <input class="field-input" type="password" id="regPass" placeholder="Create a password" required>
+        <div class="password-field">
+          <input class="field-input" type="password" id="regPass" placeholder="Create a password" required>
+          <button type="button" class="password-toggle" data-target="regPass" aria-label="Show password">👁</button>
+        </div>
 
         <label class="field-label">Notify me about reminders and updates via</label>
         <div class="notify-channel-row">

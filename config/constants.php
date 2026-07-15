@@ -4,12 +4,18 @@
 // =========================================================
 
 define('BASE_PATH', dirname(__DIR__));
+
+// Local/environment secrets (DB credentials etc.) — untracked, optional.
+if (file_exists(BASE_PATH . '/config/.env.php')) {
+    require BASE_PATH . '/config/.env.php';
+}
+
 define('APP_CONFIG', require BASE_PATH . '/config/app.php');
 define('DB_CONFIG', require BASE_PATH . '/config/database.php');
 
-// uploads live inside public/ so they're directly web-servable via Apache
-define('UPLOAD_PATH', BASE_PATH . '/public/uploads');
-define('LOG_PATH', BASE_PATH . '/public/uploads/logs');
+// uploads live at the project/web root so they're directly web-servable by Apache
+define('UPLOAD_PATH', BASE_PATH . '/uploads');
+define('LOG_PATH', BASE_PATH . '/uploads/logs');
 define('UPLOAD_URL_BASE', '/uploads');
 
 // HTTP status codes used across controllers

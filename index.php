@@ -3,7 +3,7 @@
 // FRONT CONTROLLER — every /api/* request enters here
 // =========================================================
 
-require_once __DIR__ . '/../config/constants.php';
+require_once __DIR__ . '/config/constants.php';
 
 date_default_timezone_set(APP_CONFIG['timezone']);
 

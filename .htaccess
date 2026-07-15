@@ -1,6 +1,12 @@
 Options -Indexes
 RewriteEngine On
 
-# Frontend + API both live under public/ now — redirect the bare project
-# root to it for convenience (e.g. http://localhost/atu-connect/ -> /public/).
-RewriteRule ^$ public/ [R=302,L]
+DirectoryIndex index.html
+
+# Serve real files/directories (frontend assets, uploads) directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else goes through the front controller
+RewriteRule ^ index.php [L]

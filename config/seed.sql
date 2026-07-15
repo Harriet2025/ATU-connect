@@ -51,8 +51,11 @@ INSERT INTO assignments (course_id, created_by, title, description, max_score, d
    (SELECT user_id FROM users WHERE identifier = 'LEC001'),
    'ER Diagram Assignment', 'Design an ER diagram for a library management system.', 100.00, DATE_ADD(NOW(), INTERVAL 7 DAY));
 
+-- Names match the filter chip labels in announcements.html exactly —
+-- the frontend looks up a category id by chip text, so any mismatch
+-- silently breaks that filter (it quietly falls back to "All").
 INSERT INTO announcement_categories (category_name) VALUES
-  ('General'), ('Exam'), ('Event'), ('Scholarship'), ('Internship');
+  ('Academic'), ('Department'), ('SRC'), ('Events'), ('Emergency'), ('Exams'), ('Scholarships'), ('General');
 
 INSERT INTO announcements (author_id, category_id, department_id, title, body, priority) VALUES
   ((SELECT user_id FROM users WHERE identifier = 'ADMIN001'), (SELECT category_id FROM announcement_categories WHERE category_name = 'General'), NULL,
@@ -63,3 +66,17 @@ INSERT INTO announcements (author_id, category_id, department_id, title, body, p
 INSERT INTO events (title, description, event_type, department_id, start_datetime, created_by) VALUES
   ('Matriculation Ceremony', 'New students matriculation ceremony.', 'other', NULL, DATE_ADD(NOW(), INTERVAL 14 DAY),
    (SELECT user_id FROM users WHERE identifier = 'ADMIN001'));
+
+INSERT INTO documents (uploaded_by, title, file_path, category, is_pinned) VALUES
+  ((SELECT user_id FROM users WHERE identifier = 'ADMIN001'), 'Academic Calendar 2026', 'academic-calendar-2026.pdf', 'General', 1),
+  ((SELECT user_id FROM users WHERE identifier = 'HOD001'), 'CS Dept Exam Timetable', 'cs-exam-timetable.pdf', 'Exam', 0);
+
+INSERT INTO conversations (is_group, created_by) VALUES
+  (0, (SELECT user_id FROM users WHERE identifier = 'LEC001'));
+
+INSERT INTO conversation_participants (conversation_id, user_id) VALUES
+  (1, (SELECT user_id FROM users WHERE identifier = 'LEC001')),
+  (1, (SELECT user_id FROM users WHERE identifier = 'CS20250001'));
+
+INSERT INTO messages (conversation_id, sender_id, body) VALUES
+  (1, (SELECT user_id FROM users WHERE identifier = 'LEC001'), 'Hi Kojo, just a reminder that the ER Diagram Assignment is due next week.');

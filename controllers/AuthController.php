@@ -115,6 +115,7 @@ class AuthController extends BaseController
         }
 
         $user = User::find($userId);
+        Auth::login(array_merge($user, ['role_name' => $data['role']]));
         unset($user['password_hash']);
         Response::success($user, 'Registration successful.', HTTP_CREATED);
     }

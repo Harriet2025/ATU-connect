@@ -145,92 +145,15 @@
               <h3>Announcements Feed</h3>
               <a href="announcements.html" class="link-muted">See all</a>
             </div>
-
-            <article class="post-card pinned">
-              <div class="post-head">
-                <span class="mock-avatar lg"></span>
-                <div class="post-meta">
-                  <strong>Dr. Kofi Owusu</strong>
-                  <span class="post-role">HOD · Computer Science</span>
-                </div>
-                <span class="mock-badge badge-danger">Emergency</span>
-              </div>
-              <h4 class="post-title">Mid-semester exams timetable released</h4>
-              <p class="post-body">The mid-semester examination timetable for all Computer Science courses has been published. Please check your course pages for specific venues and times.</p>
-              <div class="post-footer">
-                <span>📌 Pinned</span>
-                <span>❤ 42</span>
-                <span>💬 8 comments</span>
-                <span class="post-date">2 hours ago</span>
-              </div>
-            </article>
-
-            <article class="post-card">
-              <div class="post-head">
-                <span class="mock-avatar lg"></span>
-                <div class="post-meta">
-                  <strong>SRC Executive Council</strong>
-                  <span class="post-role">SRC · Student Affairs</span>
-                </div>
-                <span class="mock-badge badge-gold">SRC</span>
-              </div>
-              <h4 class="post-title">Cultural Week registration now open</h4>
-              <p class="post-body">Register your department for this year's Cultural Week events. Deadline for registration is next Friday.</p>
-              <div class="post-footer">
-                <span>❤ 118</span>
-                <span>💬 21 comments</span>
-                <span class="post-date">5 hours ago</span>
-              </div>
-            </article>
-
-            <article class="post-card">
-              <div class="post-head">
-                <span class="mock-avatar lg"></span>
-                <div class="post-meta">
-                  <strong>Mrs. Adjoa Sarpong</strong>
-                  <span class="post-role">Lecturer · Software Engineering</span>
-                </div>
-                <span class="mock-badge badge-green">Academic</span>
-              </div>
-              <h4 class="post-title">Lecture materials for Week 9 uploaded</h4>
-              <p class="post-body">Slides and reading materials on Software Testing are now available on the course page.</p>
-              <div class="post-footer">
-                <span>❤ 26</span>
-                <span>💬 3 comments</span>
-                <span class="post-date">Yesterday</span>
-              </div>
-            </article>
+            <div id="announcementsList"><p class="text-muted">Loading announcements…</p></div>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h3>Upcoming Assignments</h3>
+              <h3>Assignments</h3>
               <a href="assignments.html" class="link-muted">See all</a>
             </div>
-
-            <div class="assign-card-row">
-              <div class="assign-card">
-                <span class="mock-badge badge-danger">Due Tomorrow</span>
-                <h4>ERD Design Project</h4>
-                <p>Database Systems · Dr. Kofi Owusu</p>
-                <div class="mock-progress"><div class="mock-progress-bar"></div></div>
-                <span class="progress-label">55% submitted</span>
-              </div>
-              <div class="assign-card">
-                <span class="mock-badge badge-gold">Due in 3 days</span>
-                <h4>Testing Strategy Report</h4>
-                <p>Software Engineering · Mrs. Adjoa Sarpong</p>
-                <div class="mock-progress"><div class="mock-progress-bar w80"></div></div>
-                <span class="progress-label">80% submitted</span>
-              </div>
-              <div class="assign-card">
-                <span class="mock-badge badge-green">Due next week</span>
-                <h4>Network Topology Design</h4>
-                <p>Computer Networks · Mr. Yaw Asante</p>
-                <div class="mock-progress"><div class="mock-progress-bar" style="width:20%"></div></div>
-                <span class="progress-label">20% submitted</span>
-              </div>
-            </div>
+            <div class="assign-card-row" id="manageAssignmentsGrid"><p class="text-muted">Loading assignments…</p></div>
           </section>
 
         </div>
@@ -270,21 +193,7 @@
 
           <section class="panel">
             <div class="panel-head"><h3>Messages</h3><a href="messages.html" class="link-muted">Open</a></div>
-            <div class="msg-row">
-              <span class="mock-avatar lg online"></span>
-              <div><strong>Dr. Kofi Owusu</strong><p>Please resubmit the ERD file…</p></div>
-              <span class="msg-time">2m</span>
-            </div>
-            <div class="msg-row unread">
-              <span class="mock-avatar lg"></span>
-              <div><strong>CS Level 300 Group</strong><p>Yaw: Anyone free to study?</p></div>
-              <span class="msg-time">14m</span>
-            </div>
-            <div class="msg-row">
-              <span class="mock-avatar lg online"></span>
-              <div><strong>Mrs. Adjoa Sarpong</strong><p>Good work on the last submission.</p></div>
-              <span class="msg-time">1h</span>
-            </div>
+            <div id="convItems"><p class="text-muted" style="padding:14px;">Loading conversations…</p></div>
           </section>
 
         </aside>
