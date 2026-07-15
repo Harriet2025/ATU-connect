@@ -3,17 +3,23 @@
    ========================================================= */
 
 :root{
-  --blue-900:#0a1a3c;
-  --blue-800:#0f2557;
-  --blue-700:#15316e;
-  --blue-600:#1c3f8f;
-  --blue-500:#2952b3;
-  --blue-100:#e8edfb;
+  /* Accra Technical University palette — deep navy → Bahama blue */
+  --blue-900:#0a2352;
+  --blue-800:#0e3170;
+  --blue-700:#154293;
+  --blue-600:#1c56bb;
+  --blue-500:#2a72d0;   /* Bahama blue — primary accent */
+  --blue-100:#e6eefb;
+  --blue-200:#c9dbf6;
 
-  --gold-600:#c9971f;
-  --gold-500:#e0ab2b;
-  --gold-400:#f2c94c;
-  --gold-100:#fdf3d9;
+  /* ATU metallic gold */
+  --gold-600:#bf8f13;
+  --gold-500:#e2ac2e;
+  --gold-400:#f4c94f;
+  --gold-100:#fdf3d6;
+
+  /* ATU ribbon red — reserved for emergencies / critical accents */
+  --atu-red:#b02a30;
 
   --ink-900:#14141a;
   --ink-700:#26262f;
@@ -676,27 +682,37 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 
 /* ---- sidebar ---- */
 .app-sidebar{
-  width:250px; flex-shrink:0;
-  background:var(--blue-900);
+  width:256px; flex-shrink:0;
+  background:linear-gradient(185deg, var(--blue-800) 0%, var(--blue-900) 60%);
   color:#fff;
   display:flex; flex-direction:column;
-  padding:20px 16px;
+  padding:20px 14px;
   position:sticky; top:0; height:100vh;
-  transition:margin-left .2s ease;
+  transition:margin-left .25s ease;
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.05);
 }
-.app-brand{ padding:8px 8px 24px; }
+.app-brand{ padding:6px 10px 22px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,.08); }
 .app-brand .brand-name{ color:#fff; }
 
-.side-nav{ display:flex; flex-direction:column; gap:4px; flex:1; }
+.side-nav{ display:flex; flex-direction:column; gap:3px; flex:1; padding-top:14px; }
 .side-link{
-  display:flex; align-items:center; gap:12px;
-  padding:11px 12px; border-radius:var(--radius-sm);
-  font-size:.9rem; font-weight:600; color:rgba(255,255,255,.72);
-  transition:background .15s ease, color .15s ease;
+  display:flex; align-items:center; gap:13px;
+  padding:11px 13px; border-radius:11px;
+  font-size:.9rem; font-weight:600; color:rgba(255,255,255,.7);
+  transition:background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
   position:relative;
 }
-.side-link:hover{ background:rgba(255,255,255,.08); color:#fff; }
-.side-link.active{ background:linear-gradient(135deg, var(--gold-500), var(--gold-600)); color:var(--blue-900); }
+.side-link:hover{ background:rgba(255,255,255,.09); color:#fff; transform:translateX(3px); }
+.side-link.active{
+  background:linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  color:var(--blue-900);
+  box-shadow:0 8px 18px rgba(226,172,46,.28);
+}
+/* gold cap on the active item for a clear "you are here" cue */
+.side-link.active::before{
+  content:''; position:absolute; left:-14px; top:50%; transform:translateY(-50%);
+  width:4px; height:22px; border-radius:0 4px 4px 0; background:var(--gold-400);
+}
 
 .side-icon{
   width:20px; height:20px; flex-shrink:0;
@@ -1233,3 +1249,75 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 
 /* brand logo image in nav/sidebar */
 .brand-logo{ height:30px; width:auto; display:block; border-radius:6px; }
+
+/* =========================================================
+   ATU REFRESH — motion, depth & polish (app shell)
+   ========================================================= */
+
+@keyframes atuFadeUp{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+@keyframes atuPop{ from{ opacity:0; transform:scale(.96); } to{ opacity:1; transform:none; } }
+
+/* gentle staggered entrance for the main dashboard blocks */
+.app-content .content-head{ animation:atuFadeUp .45s ease both; }
+.app-content .stat-grid .stat-card{ animation:atuFadeUp .5s ease both; }
+.app-content .stat-grid .stat-card:nth-child(2){ animation-delay:.06s; }
+.app-content .stat-grid .stat-card:nth-child(3){ animation-delay:.12s; }
+.app-content .stat-grid .stat-card:nth-child(4){ animation-delay:.18s; }
+.app-content .content-grid .panel,
+.app-content > .panel{ animation:atuFadeUp .5s ease both; animation-delay:.1s; }
+
+/* stat cards: gradient icon tiles + hover lift + gold reveal */
+.stat-card{ position:relative; overflow:hidden; transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.stat-card::after{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(var(--blue-500), var(--gold-500)); opacity:0; transition:opacity .22s ease; }
+.stat-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--blue-200); }
+.stat-card:hover::after{ opacity:1; }
+.stat-icon{ background:linear-gradient(150deg, var(--blue-100), #fff); box-shadow:inset 0 0 0 1px rgba(42,114,208,.12); }
+
+/* panels: subtle hover depth for a more tactile, professional feel */
+.panel{ transition:box-shadow .22s ease, transform .22s ease; }
+.panel:hover{ box-shadow:var(--shadow-md); }
+
+/* page title gets a gold underline accent */
+.content-head h1{ position:relative; padding-bottom:8px; }
+.content-head h1::after{ content:''; position:absolute; left:0; bottom:0; width:44px; height:3px; border-radius:3px; background:linear-gradient(90deg, var(--gold-500), var(--blue-500)); }
+
+/* topbar: crisper, with a soft shadow when scrolled under content */
+.app-topbar{ box-shadow:0 1px 0 var(--border), 0 6px 18px rgba(10,35,82,.04); }
+.topbar-profile{ padding:5px 8px; border-radius:12px; transition:background .18s ease; }
+.topbar-profile:hover{ background:var(--surface-2); }
+
+/* notification dropdown: pop in instead of hard toggle */
+.notif-dropdown.open{ animation:atuPop .18s ease both; }
+
+/* respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce){
+  .app-content .content-head,
+  .app-content .stat-grid .stat-card,
+  .app-content .content-grid .panel,
+  .app-content > .panel,
+  .notif-dropdown.open{ animation:none; }
+}
+
+/* =========================================================
+   TOAST NOTIFICATIONS — non-blocking "pop up" feedback
+   ========================================================= */
+.toast-container{
+  position:fixed; top:20px; right:20px; z-index:1000;
+  display:flex; flex-direction:column; gap:10px; max-width:min(360px, calc(100vw - 40px));
+}
+.toast{
+  display:flex; align-items:flex-start; gap:10px;
+  background:var(--surface); color:var(--text-900);
+  border:1px solid var(--border); border-left:4px solid var(--blue-500);
+  border-radius:12px; padding:13px 16px;
+  box-shadow:var(--shadow-lg); font-size:.9rem; font-weight:500;
+  animation:atuToastIn .25s cubic-bezier(.2,.9,.3,1.2) both;
+}
+.toast.leaving{ animation:atuToastOut .2s ease both; }
+.toast.success{ border-left-color:var(--success); }
+.toast.error{ border-left-color:var(--danger); }
+.toast.info{ border-left-color:var(--blue-500); }
+.toast-ico{ font-size:1.05rem; line-height:1.3; }
+@keyframes atuToastIn{ from{ opacity:0; transform:translateX(24px); } to{ opacity:1; transform:none; } }
+@keyframes atuToastOut{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateX(24px); } }
+@media (max-width:480px){ .toast-container{ left:16px; right:16px; top:16px; max-width:none; } }

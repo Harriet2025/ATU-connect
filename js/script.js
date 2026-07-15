@@ -61,6 +61,28 @@ async function apiFetch(path, options = {}) {
 }
 
 // =========================================================
+// TOAST — non-blocking pop-up feedback (replaces blocking alert()).
+// showToast('Saved!', 'success' | 'error' | 'info')
+// =========================================================
+function showToast(message, type = 'info', duration = 4000) {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const icons = { success: '✓', error: '⚠', info: 'ℹ' };
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-ico">${icons[type] || icons.info}</span><span>${escapeHtml(String(message))}</span>`;
+  container.appendChild(toast);
+  const remove = () => { toast.classList.add('leaving'); setTimeout(() => toast.remove(), 220); };
+  const timer = setTimeout(remove, duration);
+  toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
+}
+
+// =========================================================
 // ROLE MAPPING — frontend hyphenated <select> values <-> backend slugs
 // =========================================================
 const ROLE_HYPHEN_TO_SLUG = {
@@ -1053,7 +1075,7 @@ async function renderAnnouncementsFeed() {
       const priority = document.getElementById('composerPriority')?.value || 'normal';
       const file = document.getElementById('composerAttachment')?.files?.[0];
       if (!title || !body || !categoryId) {
-        alert('Title, body and category are required.');
+        showToast('Title, body and category are required.', 'error');
         return;
       }
 
@@ -1077,7 +1099,7 @@ async function renderAnnouncementsFeed() {
         composer.classList.remove('open');
         load();
       } else {
-        alert(res.data?.message || 'Could not publish announcement.');
+        showToast(res.data?.message || 'Could not publish announcement.', 'error');
       }
     });
   }
@@ -1157,7 +1179,7 @@ async function renderAssignmentsFeed() {
         if (res.ok && res.data?.success) {
           renderAssignmentsFeed();
         } else {
-          alert(res.data?.message || 'Submission failed.');
+          showToast(res.data?.message || 'Submission failed.', 'error');
         }
       });
     } else {
@@ -1231,8 +1253,9 @@ async function renderCoursesFeed() {
       if (res2.ok && res2.data?.success !== false) {
         btn.textContent = 'Registered';
         btn.disabled = true;
+        showToast('You’re registered for this course.', 'success');
       } else {
-        alert(res2.data?.message || 'Could not register for course.');
+        showToast(res2.data?.message || 'Could not register for course.', 'error');
       }
     });
   } catch {
@@ -1373,16 +1396,16 @@ async function renderHodManagement() {
     const id = (approve || reject).dataset.id;
     const action = approve ? 'approve' : 'reject';
     const res = await apiFetch(`lecturers/${id}/${action}`, { method: 'POST' });
-    if (res.ok && res.data?.success) { await loadPending(); await loadLecturers(); }
-    else alert(res.data?.message || 'Action failed.');
+    if (res.ok && res.data?.success) { showToast(`Lecturer ${action}d.`, 'success'); await loadPending(); await loadLecturers(); }
+    else showToast(res.data?.message || 'Action failed.', 'error');
   });
 
   coursesBox?.addEventListener('change', async e => {
     const sel = e.target.closest('.course-reassign');
     if (!sel) return;
     const res = await apiFetch(`courses/${sel.dataset.id}`, { method: 'PUT', body: { lecturer_id: sel.value } });
-    if (res.ok && res.data?.success) loadCourses();
-    else alert(res.data?.message || 'Could not reassign.');
+    if (res.ok && res.data?.success) { showToast('Lecturer assignment updated.', 'success'); loadCourses(); }
+    else showToast(res.data?.message || 'Could not reassign.', 'error');
   });
 
   document.getElementById('createCourseBtn')?.addEventListener('click', async () => {
@@ -1402,6 +1425,7 @@ async function renderHodManagement() {
     if (res.ok && res.data?.success) {
       ['courseCode', 'courseName', 'courseDesc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
       if (document.getElementById('courseLecturer')) document.getElementById('courseLecturer').value = '';
+      showToast('Course created.', 'success');
       loadCourses();
     } else if (err) {
       err.textContent = res.data?.message || 'Could not create course.';
