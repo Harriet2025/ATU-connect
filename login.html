@@ -130,6 +130,7 @@
         <label class="field-label" for="regId">Student / Staff ID</label>
         <input class="field-input" type="text" id="regId" placeholder="e.g. ATU/2024/00123" required>
 
+        <!-- Students: academic level -->
         <div id="regLevelGroup">
           <label class="field-label" for="regLevel">Level</label>
           <select class="field-input" id="regLevel">
@@ -138,6 +139,20 @@
             <option value="300" selected>Level 300</option>
             <option value="400">Level 400</option>
           </select>
+        </div>
+
+        <!-- Non-students: which department they belong to / oversee -->
+        <div id="regDepartmentGroup" style="display:none;">
+          <label class="field-label" for="regDepartment">Department</label>
+          <select class="field-input" id="regDepartment">
+            <option value="">Loading departments…</option>
+          </select>
+        </div>
+
+        <!-- Lecturers: the course(s) they teach -->
+        <div id="regCourseGroup" style="display:none;">
+          <label class="field-label" for="regCourse">Course(s) you teach</label>
+          <input class="field-input" type="text" id="regCourse" placeholder="e.g. CS 204 — Database Management Systems">
         </div>
 
         <label class="field-label" for="regEmail" id="regEmailLabel">Student Email</label>

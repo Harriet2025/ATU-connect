@@ -91,6 +91,7 @@ CREATE TABLE lecturers (
   user_id           INT UNSIGNED NOT NULL UNIQUE,
   staff_title       VARCHAR(100) NULL,
   office_location   VARCHAR(150) NULL,
+  courses_taught    VARCHAR(255) NULL, -- free-text captured at sign-up
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

@@ -14,7 +14,19 @@ INSERT INTO roles (role_name, description) VALUES
   ('administrator', 'Full system control');
 
 INSERT INTO departments (department_name, slug, description) VALUES
-  ('Computer Science', 'computer-science', 'Department of Computer Science, Accra Technical University.');
+  ('Computer Science', 'computer-science', 'Department of Computer Science, Accra Technical University.'),
+  ('Accountancy', 'accountancy', 'Department of Accountancy.'),
+  ('Marketing', 'marketing', 'Department of Marketing.'),
+  ('Procurement & Supply Science', 'procurement-supply-science', 'Department of Procurement and Supply Science.'),
+  ('Management & Public Administration', 'management-public-administration', 'Department of Management and Public Administration.'),
+  ('Civil Engineering', 'civil-engineering', 'Department of Civil Engineering.'),
+  ('Electrical & Electronic Engineering', 'electrical-electronic-engineering', 'Department of Electrical and Electronic Engineering.'),
+  ('Mechanical Engineering', 'mechanical-engineering', 'Department of Mechanical Engineering.'),
+  ('Building Technology', 'building-technology', 'Department of Building Technology.'),
+  ('Hospitality Management', 'hospitality-management', 'Department of Hospitality Management.'),
+  ('Fashion Design & Textiles', 'fashion-design-textiles', 'Department of Fashion Design and Textiles.'),
+  ('Mathematics & Statistics', 'mathematics-statistics', 'Department of Mathematics and Statistics.'),
+  ('Science Laboratory Technology', 'science-laboratory-technology', 'Department of Science Laboratory Technology.');
 
 -- Verified bcrypt hash of plaintext: Password123!
 -- (generated + round-tripped with password_verify() against XAMPP's own php.exe;

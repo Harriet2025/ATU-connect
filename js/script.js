@@ -352,32 +352,61 @@ function initAuthPage() {
   wireRolePicker('loginRoleGrid', 'loginRoleSelect');
   wireRolePicker('registerRoleGrid', 'registerRoleSelect');
 
-  // Level only applies to students
+  // Role-specific registration fields + email labelling.
   const registerRoleSelect = document.getElementById('registerRoleSelect');
   const regLevelGroup = document.getElementById('regLevelGroup');
+  const regDepartmentGroup = document.getElementById('regDepartmentGroup');
+  const regCourseGroup = document.getElementById('regCourseGroup');
+  const regDepartment = document.getElementById('regDepartment');
   const regEmail = document.getElementById('regEmail');
   const regEmailLabel = document.getElementById('regEmailLabel');
   const STUDENT_EMAIL_PATTERN = '^[A-Za-z0-9]+@st\\.atu\\.edu\\.gh$';
   const STAFF_EMAIL_PATTERN = '^[A-Za-z0-9._-]+@atu\\.edu\\.gh$';
-  if (registerRoleSelect && regEmail && regEmailLabel) {
-    const toggleEmailField = () => {
-      const isStudent = registerRoleSelect.value === 'student';
-      regEmailLabel.textContent = isStudent ? 'Student Email' : 'Staff Email';
-      regEmail.placeholder = isStudent ? 'e.g. 00934522B@st.atu.edu.gh' : 'e.g. k.owusu@atu.edu.gh';
-      regEmail.pattern = isStudent ? STUDENT_EMAIL_PATTERN : STAFF_EMAIL_PATTERN;
-      regEmail.title = isStudent
-        ? 'Format: yourStudentID@st.atu.edu.gh (e.g. 00934522B@st.atu.edu.gh)'
-        : 'Format: name@atu.edu.gh (staff email, not a student @st.atu.edu.gh address)';
+
+  // Per-role email label (hyphenated <select> values).
+  const EMAIL_LABELS = {
+    student: 'Student Email', lecturer: "Lecturer's Email", hod: "HOD's Email",
+    'dept-exec': "Departmental Executive's Email", 'src-exec': "SRC Executive's Email",
+    'jcrc-exec': "JCRC Executive's Email", 'faculty-exec': "Faculty Executive's Email",
+    'faculty-dean': "Faculty Dean's Email", registrar: "Registrar's Email",
+    'student-affairs': 'Student Affairs Email', 'university-management': 'University Management Email',
+    admin: "Administrator's Email"
+  };
+
+  if (registerRoleSelect) {
+    const applyRoleFields = () => {
+      const role = registerRoleSelect.value;
+      const isStudent = role === 'student';
+      const isLecturer = role === 'lecturer';
+
+      // Email label + validation pattern
+      if (regEmail && regEmailLabel) {
+        regEmailLabel.textContent = EMAIL_LABELS[role] || 'Email';
+        regEmail.placeholder = isStudent ? 'e.g. 00934522B@st.atu.edu.gh' : 'e.g. k.owusu@atu.edu.gh';
+        regEmail.pattern = isStudent ? STUDENT_EMAIL_PATTERN : STAFF_EMAIL_PATTERN;
+        regEmail.title = isStudent
+          ? 'Format: yourStudentID@st.atu.edu.gh'
+          : 'Format: name@atu.edu.gh (staff email, not a student @st.atu.edu.gh address)';
+      }
+      // Level → students only. Department → everyone else. Course → lecturers.
+      if (regLevelGroup) regLevelGroup.style.display = isStudent ? '' : 'none';
+      if (regDepartmentGroup) regDepartmentGroup.style.display = isStudent ? 'none' : '';
+      if (regCourseGroup) regCourseGroup.style.display = isLecturer ? '' : 'none';
     };
-    toggleEmailField();
-    registerRoleSelect.addEventListener('change', toggleEmailField);
+    applyRoleFields();
+    registerRoleSelect.addEventListener('change', applyRoleFields);
   }
-  if (registerRoleSelect && regLevelGroup) {
-    const toggleLevelField = () => {
-      regLevelGroup.style.display = registerRoleSelect.value === 'student' ? '' : 'none';
-    };
-    toggleLevelField();
-    registerRoleSelect.addEventListener('change', toggleLevelField);
+
+  // Populate the department dropdown (public endpoint, works pre-login).
+  if (regDepartment) {
+    apiFetch('departments').then(res => {
+      if (res.ok && res.data?.success && res.data.data.length) {
+        regDepartment.innerHTML = '<option value="">Select your department…</option>' +
+          res.data.data.map(d => `<option value="${d.department_id}">${escapeHtml(d.department_name)}</option>`).join('');
+      } else {
+        regDepartment.innerHTML = '<option value="">No departments available</option>';
+      }
+    }).catch(() => { regDepartment.innerHTML = '<option value="">Could not load departments</option>'; });
   }
 
   // Field-level error helpers shared by both forms.
@@ -488,6 +517,14 @@ function initAuthPage() {
       };
       if (role === 'student') {
         payload.level = document.getElementById('regLevel')?.value || '';
+      } else {
+        // Non-students pick a department (drives the department channel +
+        // "which department do you belong to/oversee").
+        const dept = document.getElementById('regDepartment')?.value || '';
+        if (dept) payload.department_id = dept;
+        if (role === 'lecturer') {
+          payload.courses_taught = document.getElementById('regCourse')?.value.trim() || '';
+        }
       }
 
       const submitBtn = registerForm.querySelector('button[type="submit"]');

@@ -135,6 +135,7 @@ class AuthController extends BaseController
                 'user_id'         => $userId,
                 'staff_title'     => $request->input('staff_title'),
                 'office_location' => $request->input('office_location'),
+                'courses_taught'  => $request->input('courses_taught'),
             ]);
         }
 

@@ -83,6 +83,9 @@ $router->post('/api/messages', 'Controllers\\MessageController@store', $authCsrf
 $router->post('/api/messages/{id}/accept', 'Controllers\\MessageController@accept', $authCsrf);
 $router->post('/api/messages/{id}/decline', 'Controllers\\MessageController@decline', $authCsrf);
 
+// -------------------- Departments (public — for the register dropdown) --------------------
+$router->get('/api/departments', 'Controllers\\DepartmentController@index');
+
 // -------------------- Sections (group channels) --------------------
 $router->get('/api/sections', 'Controllers\\SectionController@index', $auth);
 $router->get('/api/sections/{id}/messages', 'Controllers\\SectionController@messages', $auth);
