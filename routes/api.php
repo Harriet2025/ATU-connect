@@ -57,10 +57,13 @@ $router->post('/api/submissions/{id}/grade', 'Controllers\\AssignmentController@
 // -------------------- Courses --------------------
 $router->get('/api/courses', 'Controllers\\CourseController@index', $auth);
 $router->post('/api/courses', 'Controllers\\CourseController@store', $authCsrf); // HOD/admin
+// "mine" registered before /courses/{id} so its non-numeric path isn't swallowed.
+$router->get('/api/courses/mine', 'Controllers\\CourseController@mine', $auth); // lecturer
 $router->get('/api/courses/{id}', 'Controllers\\CourseController@show', $auth);
 $router->put('/api/courses/{id}', 'Controllers\\CourseController@update', $authCsrf); // HOD/admin
 $router->post('/api/courses/{id}/register', 'Controllers\\CourseController@register', $authCsrf);
 $router->post('/api/courses/{id}/drop', 'Controllers\\CourseController@drop', $authCsrf);
+$router->post('/api/courses/{id}/message-class', 'Controllers\\CourseController@messageClass', $authCsrf); // lecturer
 
 // -------------------- Lecturer management (HOD/admin) --------------------
 // "pending" registered before any {id} pattern so it isn't swallowed.

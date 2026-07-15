@@ -8,6 +8,9 @@ use Core\Auth;
 use Models\Course;
 use Models\CourseRegistration;
 use Models\Student;
+use Models\Lecturer;
+use Models\User;
+use Helpers\NotificationDispatcher;
 
 // =========================================================
 // COURSE CONTROLLER — listing, student registration/drop
@@ -79,6 +82,58 @@ class CourseController extends BaseController
 
         Course::update((int) $id, $allowed);
         Response::success(Course::find((int) $id), 'Course updated.');
+    }
+
+    // GET /api/courses/mine — the logged-in lecturer's own courses
+    // (for the "message my class" course picker).
+    public function mine(Request $request): void
+    {
+        $this->requireRole([ROLE_LECTURER]);
+        $lecturer = Lecturer::findByUserId(Auth::id());
+        if (!$lecturer) {
+            Response::success([]);
+        }
+        Response::success(Course::forLecturer((int) $lecturer['lecturer_id']));
+    }
+
+    // POST /api/courses/{id}/message-class — lecturer broadcasts a general
+    // message to every student enrolled on one of their courses. Fans out
+    // through NotificationDispatcher, so each student gets it in-app and by
+    // email/SMS according to their own notification preferences.
+    public function messageClass(Request $request, $id): void
+    {
+        $this->requireRole([ROLE_LECTURER]);
+
+        $data = $this->validate($request->all(), [
+            'message' => 'required|max:650',
+        ]);
+
+        $course = Course::find((int) $id);
+        if (!$course) {
+            Response::error('Course not found.', HTTP_NOT_FOUND);
+        }
+
+        // Ownership: the course's lecturer_id must map to this user.
+        $lecturer = Lecturer::findByUserId(Auth::id());
+        if (!$lecturer || (int) $course['lecturer_id'] !== (int) $lecturer['lecturer_id']) {
+            Response::error('You can only message a class you teach.', HTTP_FORBIDDEN);
+        }
+
+        $me = User::find(Auth::id());
+        $title = 'Message from ' . ($me['full_name'] ?? 'your lecturer') . ' · ' . $course['course_code'];
+        $recipients = CourseRegistration::studentUserIdsForCourse((int) $id);
+        foreach ($recipients as $studentUserId) {
+            NotificationDispatcher::notify(
+                $studentUserId,
+                'class_message',
+                $title,
+                $data['message'],
+                'medium',
+                (int) $id
+            );
+        }
+
+        Response::success(['recipients' => count($recipients)], 'Message sent to ' . count($recipients) . ' student(s).');
     }
 
     public function register(Request $request, $id): void

@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHodManagement();
   updateMessageBadges();
   initSmsTest();
+  initClassMessage();
 
   // Server is the source of truth when reachable; falls back silently to
   // the localStorage cache above (already rendered) if there's no session
@@ -1237,6 +1238,49 @@ async function renderCoursesFeed() {
   } catch {
     grid.innerHTML = '<p class="text-muted">Could not load courses right now.</p>';
   }
+}
+
+// =========================================================
+// MESSAGE MY CLASS (lecturer.html) — broadcast to a course's students.
+// =========================================================
+async function initClassMessage() {
+  const panel = document.getElementById('classMessagePanel');
+  if (!panel) return;
+  const select = document.getElementById('classMessageCourse');
+  const body = document.getElementById('classMessageBody');
+  const sendBtn = document.getElementById('classMessageSend');
+  const out = document.getElementById('classMessageResult');
+
+  const res = await apiFetch('courses/mine');
+  const courses = (res.ok && res.data?.success) ? res.data.data : [];
+  if (!courses.length) {
+    select.innerHTML = '<option value="">No courses assigned to you yet</option>';
+    select.disabled = true;
+    sendBtn.disabled = true;
+    return;
+  }
+  select.innerHTML = courses.map(c =>
+    `<option value="${c.course_id}">${escapeHtml(c.course_code)} — ${escapeHtml(c.course_name)}</option>`).join('');
+
+  sendBtn.addEventListener('click', async () => {
+    const courseId = select.value;
+    const message = body.value.trim();
+    if (out) out.style.display = 'none';
+    if (!courseId || !message) {
+      if (out) { out.style.display = ''; out.style.color = 'var(--danger)'; out.textContent = 'Pick a course and write a message.'; }
+      return;
+    }
+    sendBtn.disabled = true;
+    const r = await apiFetch(`courses/${courseId}/message-class`, { method: 'POST', body: { message } });
+    if (out) {
+      out.style.display = '';
+      const ok = r.ok && r.data?.success;
+      out.style.color = ok ? 'var(--success)' : 'var(--danger)';
+      out.textContent = r.data?.message || (ok ? 'Sent.' : 'Could not send.');
+      if (ok) body.value = '';
+    }
+    sendBtn.disabled = false;
+  });
 }
 
 // =========================================================

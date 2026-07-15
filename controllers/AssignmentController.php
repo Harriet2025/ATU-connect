@@ -69,6 +69,20 @@ class AssignmentController extends BaseController
             'due_date'    => $data['due_date'],
         ]);
 
+        // Alert every enrolled student that a new assignment was posted
+        // (in-app + email/SMS per their prefs). The 24h "due soon" nudge is
+        // handled separately by remindDueSoon() via the cron script.
+        foreach (CourseRegistration::studentUserIdsForCourse((int) $data['course_id']) as $studentUserId) {
+            NotificationDispatcher::notify(
+                $studentUserId,
+                'assignment_new',
+                'New assignment: ' . $data['title'],
+                'Due ' . $data['due_date'] . '. Open ATU Connect to view the details.',
+                'medium',
+                (int) $id
+            );
+        }
+
         Response::success(Assignment::find($id), 'Assignment created.', HTTP_CREATED);
     }
 

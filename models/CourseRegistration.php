@@ -25,4 +25,17 @@ class CourseRegistration extends BaseModel
         $stmt->execute(['cid' => $courseId]);
         return (int) $stmt->fetch()['c'];
     }
+
+    // user_ids of every actively-enrolled student on a course — used to fan
+    // out a lecturer's class broadcast (in-app + email + SMS per prefs).
+    public static function studentUserIdsForCourse(int $courseId): array
+    {
+        $sql = "SELECT s.user_id
+                FROM course_registrations cr
+                JOIN students s ON s.student_id = cr.student_id
+                WHERE cr.course_id = :cid AND cr.status = 'active'";
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute(['cid' => $courseId]);
+        return array_map('intval', array_column($stmt->fetchAll(), 'user_id'));
+    }
 }

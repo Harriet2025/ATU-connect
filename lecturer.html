@@ -63,6 +63,17 @@
 
       <div class="content-grid">
         <div class="content-col-main">
+          <section class="panel" id="classMessagePanel">
+            <div class="panel-head"><h3>Message My Class</h3></div>
+            <p class="text-muted" style="margin-bottom:10px;">Send a general message to every student enrolled on one of your courses. They'll get it in-app and by email/SMS based on their settings.</p>
+            <div class="hod-course-form">
+              <select class="field-input" id="classMessageCourse"><option value="">Loading your courses…</option></select>
+              <textarea class="field-input" id="classMessageBody" rows="3" placeholder="e.g. No lecture on Friday — we'll meet online instead."></textarea>
+              <button class="btn btn-primary" id="classMessageSend">Send to Class</button>
+              <p id="classMessageResult" style="margin-top:4px;font-size:.85rem;display:none;"></p>
+            </div>
+          </section>
+
           <section class="panel">
             <div class="panel-head"><h3>Manage Assignments</h3><a href="assignments.html" class="link-muted">See all</a></div>
             <div class="assign-card-row" id="manageAssignmentsGrid"><p class="text-muted">Loading assignments…</p></div>

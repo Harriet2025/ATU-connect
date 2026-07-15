@@ -37,11 +37,30 @@ class AuthController extends BaseController
         $this->logAttempt($existing['user_id'] ?? null, $user ? 'success' : 'failed');
 
         if (!$user) {
+            // Security alert to the real account owner (if the ID exists) that
+            // someone tried and failed to sign in. Only when SMS is on for them.
+            $this->smsAlert($existing, 'ATU Connect security alert: a failed login attempt was made on your account.');
             Response::error('Invalid credentials.', HTTP_UNAUTHORIZED);
         }
 
+        $this->smsAlert($user, 'ATU Connect: you have successfully signed in to your account.');
+
         unset($user['password_hash']);
         Response::success($user, 'Logged in successfully.');
+    }
+
+    // Fire-and-continue SMS alert, respecting the user's notify_sms toggle.
+    // No-ops instantly when SMS isn't configured, so it never adds latency
+    // or breaks login on non-SMS deployments.
+    private function smsAlert(?array $user, string $message): void
+    {
+        if (!$user || empty($user['notify_sms']) || empty($user['phone'])) {
+            return;
+        }
+        if (!\Helpers\SmsProvider::isConfigured()) {
+            return;
+        }
+        \Helpers\SmsProvider::send($user['phone'], $message);
     }
 
     public function register(Request $request): void
