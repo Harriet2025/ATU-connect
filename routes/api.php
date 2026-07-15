@@ -84,6 +84,9 @@ $router->post('/api/messages/{id}/decline', 'Controllers\\MessageController@decl
 $router->get('/api/users/search', 'Controllers\\UserController@search', $auth);
 $router->get('/api/users', 'Controllers\\UserController@directory', $auth); // full directory
 
+// -------------------- SMS test (self-service) --------------------
+$router->post('/api/sms/test', 'Controllers\\SmsController@test', $authCsrf);
+
 // -------------------- Notifications --------------------
 $router->get('/api/notifications', 'Controllers\\NotificationController@index', $auth);
 $router->post('/api/notifications/{id}/read', 'Controllers\\NotificationController@markRead', $authCsrf);

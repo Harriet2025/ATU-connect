@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNotificationsFeed();
   renderHodManagement();
   updateMessageBadges();
+  initSmsTest();
 
   // Server is the source of truth when reachable; falls back silently to
   // the localStorage cache above (already rendered) if there's no session
@@ -829,7 +830,10 @@ function initProfilePage() {
 }
 
 function applyAvatarPhoto(dataUrl) {
-  document.querySelectorAll('#profileAvatar, #topbarAvatar').forEach(el => {
+  // Target the explicit avatar ids plus any topbar/sidebar profile avatar,
+  // so the uploaded picture shows in the header on every page — not just
+  // the profile page — regardless of whether that span carries an id.
+  document.querySelectorAll('#profileAvatar, #topbarAvatar, .topbar-profile .mock-avatar').forEach(el => {
     el.style.backgroundImage = `url(${dataUrl})`;
     el.style.backgroundSize = 'cover';
     el.style.backgroundPosition = 'center';
@@ -1233,6 +1237,28 @@ async function renderCoursesFeed() {
   } catch {
     grid.innerHTML = '<p class="text-muted">Could not load courses right now.</p>';
   }
+}
+
+// =========================================================
+// SMS TEST BUTTON (student.html) — texts the logged-in user's own
+// phone so you can confirm the Vynfy integration end-to-end.
+// =========================================================
+function initSmsTest() {
+  const btn = document.getElementById('smsTestBtn');
+  const out = document.getElementById('smsTestResult');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (out) { out.style.display = 'none'; }
+    const res = await apiFetch('sms/test', { method: 'POST' });
+    if (out) {
+      out.style.display = '';
+      const ok = res.ok && res.data?.success;
+      out.style.color = ok ? 'var(--success)' : 'var(--danger)';
+      out.textContent = res.data?.message || (ok ? 'Sent.' : 'Could not send.');
+    }
+    btn.disabled = false;
+  });
 }
 
 // =========================================================

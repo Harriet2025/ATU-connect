@@ -1,3 +1,4 @@
 config/.env.php
 deploy/env.php
 uploads/logs/*.log
+deploy/sms_test.php
