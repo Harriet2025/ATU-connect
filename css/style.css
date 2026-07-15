@@ -1135,3 +1135,31 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 /* course chip mini list (student.html) */
 .mini-course-chips{ display:flex; flex-wrap:wrap; gap:8px; }
 .mini-course-chip{ padding:8px 14px; border-radius:999px; background:var(--blue-100); color:var(--blue-700); font-size:.78rem; font-weight:700; }
+
+/* ===================== v2 features: message requests, badges, HOD mgmt ===================== */
+
+/* Inbox / Requests tabs */
+.conv-tabs{ display:flex; gap:6px; padding:10px 10px 0; border-bottom:1px solid var(--border); }
+.conv-tab{ flex:1; padding:9px 8px; border:none; background:transparent; font-family:inherit; font-weight:700;
+  font-size:.85rem; color:var(--text-500); cursor:pointer; border-bottom:2px solid transparent; }
+.conv-tab.active{ color:var(--blue-700); border-bottom-color:var(--blue-500); }
+.conv-tab-badge{ display:inline-block; min-width:18px; padding:0 5px; margin-left:4px; border-radius:999px;
+  background:var(--danger); color:#fff; font-size:.7rem; line-height:18px; text-align:center; }
+
+/* per-conversation unread count + emphasis */
+.conv-row.unread strong{ font-weight:800; }
+.conv-unread{ display:inline-block; min-width:20px; padding:0 6px; border-radius:999px; background:var(--blue-500);
+  color:#fff; font-size:.72rem; line-height:20px; text-align:center; font-weight:700; }
+.conv-request-actions{ display:flex; gap:8px; margin-top:8px; }
+
+/* HOD / admin management panel */
+.pending-row, .manage-course-row{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.pending-actions{ display:flex; gap:8px; }
+.hod-course-form{ display:flex; flex-direction:column; gap:10px; max-width:520px; }
+.hod-course-form .btn{ align-self:flex-start; }
+.manage-course-row .course-reassign{ max-width:260px; }
+.btn.btn-sm{ padding:6px 12px; font-size:.8rem; }
+
+/* brand logo image in nav/sidebar */
+.brand-logo{ height:30px; width:auto; display:block; border-radius:6px; }

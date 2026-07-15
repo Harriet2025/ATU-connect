@@ -56,17 +56,33 @@ $router->post('/api/submissions/{id}/grade', 'Controllers\\AssignmentController@
 
 // -------------------- Courses --------------------
 $router->get('/api/courses', 'Controllers\\CourseController@index', $auth);
+$router->post('/api/courses', 'Controllers\\CourseController@store', $authCsrf); // HOD/admin
 $router->get('/api/courses/{id}', 'Controllers\\CourseController@show', $auth);
+$router->put('/api/courses/{id}', 'Controllers\\CourseController@update', $authCsrf); // HOD/admin
 $router->post('/api/courses/{id}/register', 'Controllers\\CourseController@register', $authCsrf);
 $router->post('/api/courses/{id}/drop', 'Controllers\\CourseController@drop', $authCsrf);
 
+// -------------------- Lecturer management (HOD/admin) --------------------
+// "pending" registered before any {id} pattern so it isn't swallowed.
+$router->get('/api/lecturers/pending', 'Controllers\\LecturerController@pending', $auth);
+$router->get('/api/lecturers', 'Controllers\\LecturerController@index', $auth);
+$router->post('/api/lecturers/{id}/approve', 'Controllers\\LecturerController@approve', $authCsrf);
+$router->post('/api/lecturers/{id}/reject', 'Controllers\\LecturerController@reject', $authCsrf);
+
 // -------------------- Messages --------------------
+// "requests" + "unread-count" registered before /messages/{id} so their
+// distinct (non-numeric) paths aren't swallowed by the {id} pattern.
+$router->get('/api/messages/requests', 'Controllers\\MessageController@requests', $auth);
+$router->get('/api/messages/unread-count', 'Controllers\\MessageController@unreadCount', $auth);
 $router->get('/api/messages', 'Controllers\\MessageController@conversations', $auth);
 $router->get('/api/messages/{id}', 'Controllers\\MessageController@show', $auth);
 $router->post('/api/messages', 'Controllers\\MessageController@store', $authCsrf);
+$router->post('/api/messages/{id}/accept', 'Controllers\\MessageController@accept', $authCsrf);
+$router->post('/api/messages/{id}/decline', 'Controllers\\MessageController@decline', $authCsrf);
 
 // -------------------- Users (message recipient picker) --------------------
 $router->get('/api/users/search', 'Controllers\\UserController@search', $auth);
+$router->get('/api/users', 'Controllers\\UserController@directory', $auth); // full directory
 
 // -------------------- Notifications --------------------
 $router->get('/api/notifications', 'Controllers\\NotificationController@index', $auth);

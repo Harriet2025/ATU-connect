@@ -8,8 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0a1a3c">
-<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="icon" href="images/Atu_logo.png" type="image/png">
+<link rel="apple-touch-icon" href="images/Atu_logo.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="app-body">
@@ -19,7 +19,7 @@
   <!-- ===================== SIDEBAR ===================== -->
   <aside class="app-sidebar" id="appSidebar">
     <a href="dashboard.html" class="brand app-brand">
-      <span class="brand-mark">AC</span>
+      <img src="images/Atu_logo.png" alt="ATU" class="brand-logo">
       <span class="brand-name">ATU <em>Connect</em></span>
     </a>
 
@@ -133,6 +133,27 @@
           <span class="stat-icon icon-calendar"></span>
           <div><strong>3</strong><span>Upcoming Events</span></div>
         </div>
+      </section>
+
+      <!-- HOD / ADMIN MANAGEMENT — hidden for other roles by renderHodManagement() -->
+      <section class="panel" id="hodManagement" style="display:none;">
+        <div class="panel-head"><h3>Department Management</h3><span class="text-muted" id="hodMgmtSubtitle">HOD tools</span></div>
+
+        <h4 style="margin:8px 0;">Pending Lecturer Approvals</h4>
+        <div id="pendingLecturers"><p class="text-muted">Loading…</p></div>
+
+        <h4 style="margin:18px 0 8px;">Create a Course</h4>
+        <div class="hod-course-form">
+          <input class="field-input" id="courseCode" placeholder="Course code (e.g. CS 204)">
+          <input class="field-input" id="courseName" placeholder="Course name">
+          <input class="field-input" id="courseDesc" placeholder="Short description (optional)">
+          <select class="field-input" id="courseLecturer"><option value="">— Assign lecturer (optional) —</option></select>
+          <button class="btn btn-primary" id="createCourseBtn">Create Course</button>
+          <p class="auth-error" id="createCourseError" style="display:none;"></p>
+        </div>
+
+        <h4 style="margin:18px 0 8px;">Courses &amp; Lecturer Assignment</h4>
+        <div id="manageCoursesList"><p class="text-muted">Loading…</p></div>
       </section>
 
       <div class="content-grid">

@@ -182,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCalendarFeed();
   renderNoticeBoardFeed();
   renderNotificationsFeed();
+  renderHodManagement();
+  updateMessageBadges();
 
   // Server is the source of truth when reachable; falls back silently to
   // the localStorage cache above (already rendered) if there's no session
@@ -213,6 +215,7 @@ async function refreshSessionFromServer() {
     const merged = mergeUser(existing, mapServerUserToLocal(res.data.data, existing.roleLabel, existing.role));
     setCurrentUser(merged);
     initSessionUser();
+    renderHodManagement(); // role may only be known after this refresh
   } catch {
     // offline or unreachable — keep whatever was already rendered from cache
   }
@@ -1233,6 +1236,144 @@ async function renderCoursesFeed() {
 }
 
 // =========================================================
+// HOD / ADMIN MANAGEMENT (dashboard.html) — approve lecturers,
+// create courses, assign lecturers to courses.
+// =========================================================
+let _hodMgmtLoaded = false;
+async function renderHodManagement() {
+  const section = document.getElementById('hodManagement');
+  if (!section) return;
+
+  const user = getCurrentUser();
+  const role = user?.role;
+  if (role !== 'hod' && role !== 'administrator') {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+  if (_hodMgmtLoaded) return;   // avoid double-loading if called again post session-refresh
+  _hodMgmtLoaded = true;
+
+  const pendingBox = document.getElementById('pendingLecturers');
+  const lecturerSelect = document.getElementById('courseLecturer');
+  const coursesBox = document.getElementById('manageCoursesList');
+  let approvedLecturers = [];
+
+  function lecturerOptions(selectedId) {
+    return '<option value="">— Unassigned —</option>' + approvedLecturers.map(l =>
+      `<option value="${l.lecturer_id}"${Number(selectedId) === Number(l.lecturer_id) ? ' selected' : ''}>${escapeHtml(l.full_name)} (${escapeHtml(l.identifier)})</option>`).join('');
+  }
+
+  async function loadPending() {
+    const res = await apiFetch('lecturers/pending');
+    if (!res.ok || !res.data?.success) { pendingBox.innerHTML = '<p class="text-muted">Could not load.</p>'; return; }
+    const list = res.data.data;
+    pendingBox.innerHTML = list.length ? list.map(l => `
+      <div class="pending-row" data-id="${l.user_id}">
+        <div><strong>${escapeHtml(l.full_name)}</strong><span class="text-muted"> · ${escapeHtml(l.identifier)} · ${escapeHtml(l.email)}</span></div>
+        <div class="pending-actions">
+          <button class="btn btn-primary btn-sm btn-approve-lec" data-id="${l.user_id}">Approve</button>
+          <button class="btn btn-outline btn-sm btn-reject-lec" data-id="${l.user_id}">Reject</button>
+        </div>
+      </div>`).join('') : '<p class="text-muted">No lecturers awaiting approval.</p>';
+  }
+
+  async function loadLecturers() {
+    const res = await apiFetch('lecturers');
+    approvedLecturers = (res.ok && res.data?.success) ? res.data.data : [];
+    if (lecturerSelect) lecturerSelect.innerHTML = lecturerOptions('');
+  }
+
+  async function loadCourses() {
+    const res = await apiFetch('courses');
+    if (!res.ok || !res.data?.success) { coursesBox.innerHTML = '<p class="text-muted">Could not load courses.</p>'; return; }
+    const courses = res.data.data;
+    coursesBox.innerHTML = courses.length ? courses.map(c => `
+      <div class="manage-course-row" data-id="${c.course_id}">
+        <div><strong>${escapeHtml(c.course_code)}</strong> — ${escapeHtml(c.course_name)}
+          <span class="text-muted">(${escapeHtml(c.lecturer_name || 'Unassigned')})</span></div>
+        <select class="field-input course-reassign" data-id="${c.course_id}">${lecturerOptions(c.lecturer_id)}</select>
+      </div>`).join('') : '<p class="text-muted">No courses yet.</p>';
+  }
+
+  pendingBox?.addEventListener('click', async e => {
+    const approve = e.target.closest('.btn-approve-lec');
+    const reject = e.target.closest('.btn-reject-lec');
+    if (!approve && !reject) return;
+    const id = (approve || reject).dataset.id;
+    const action = approve ? 'approve' : 'reject';
+    const res = await apiFetch(`lecturers/${id}/${action}`, { method: 'POST' });
+    if (res.ok && res.data?.success) { await loadPending(); await loadLecturers(); }
+    else alert(res.data?.message || 'Action failed.');
+  });
+
+  coursesBox?.addEventListener('change', async e => {
+    const sel = e.target.closest('.course-reassign');
+    if (!sel) return;
+    const res = await apiFetch(`courses/${sel.dataset.id}`, { method: 'PUT', body: { lecturer_id: sel.value } });
+    if (res.ok && res.data?.success) loadCourses();
+    else alert(res.data?.message || 'Could not reassign.');
+  });
+
+  document.getElementById('createCourseBtn')?.addEventListener('click', async () => {
+    const err = document.getElementById('createCourseError');
+    if (err) err.style.display = 'none';
+    const payload = {
+      course_code: document.getElementById('courseCode')?.value.trim(),
+      course_name: document.getElementById('courseName')?.value.trim(),
+      description: document.getElementById('courseDesc')?.value.trim(),
+      lecturer_id: document.getElementById('courseLecturer')?.value || '',
+    };
+    if (!payload.course_code || !payload.course_name) {
+      if (err) { err.textContent = 'Course code and name are required.'; err.style.display = ''; }
+      return;
+    }
+    const res = await apiFetch('courses', { method: 'POST', body: payload });
+    if (res.ok && res.data?.success) {
+      ['courseCode', 'courseName', 'courseDesc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      if (document.getElementById('courseLecturer')) document.getElementById('courseLecturer').value = '';
+      loadCourses();
+    } else if (err) {
+      err.textContent = res.data?.message || 'Could not create course.';
+      err.style.display = '';
+    }
+  });
+
+  await loadPending();
+  await loadLecturers();
+  await loadCourses();
+}
+
+// =========================================================
+// MESSAGE BADGES — nav "Messages" unread count + requests-tab count.
+// Runs on every page so the sidebar badge is always live.
+// =========================================================
+function applyMessageBadges(counts) {
+  const inbox = Number(counts?.inbox_unread) || 0;
+  const requests = Number(counts?.requests) || 0;
+
+  document.querySelectorAll('.side-link[href="messages.html"] .side-badge').forEach(b => {
+    b.textContent = inbox;
+    b.style.display = inbox > 0 ? '' : 'none';
+  });
+  const reqBadge = document.getElementById('requestsBadge');
+  if (reqBadge) {
+    reqBadge.textContent = requests;
+    reqBadge.style.display = requests > 0 ? '' : 'none';
+  }
+}
+
+async function updateMessageBadges() {
+  try {
+    const res = await apiFetch('messages/unread-count');
+    if (res.ok && res.data?.success) applyMessageBadges(res.data.data);
+    else applyMessageBadges({ inbox_unread: 0, requests: 0 });
+  } catch {
+    applyMessageBadges({ inbox_unread: 0, requests: 0 });
+  }
+}
+
+// =========================================================
 // MESSAGES FEED (messages.html)
 // =========================================================
 async function renderMessagesFeed() {
@@ -1255,29 +1396,55 @@ async function renderMessagesFeed() {
     return (c.is_group == 1 ? 'Group Conversation #' : 'Direct Message #') + c.conversation_id;
   }
 
+  let activeBox = 'inbox';
+
   async function loadConversations() {
-    convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Loading conversations…</p>';
+    const box = activeBox;
+    const endpoint = box === 'requests' ? 'messages/requests' : 'messages';
+    convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Loading…</p>';
     try {
-      const res = await apiFetch('messages');
+      const res = await apiFetch(endpoint);
       if (!res.ok || !res.data?.success) {
         convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Could not load conversations.</p>';
         return;
       }
       const conversations = res.data.data;
       if (!conversations.length) {
-        convItems.innerHTML = '<p class="text-muted" style="padding:14px;">No conversations yet.</p>';
+        convItems.innerHTML = box === 'requests'
+          ? '<p class="text-muted" style="padding:14px;">No message requests.</p>'
+          : '<p class="text-muted" style="padding:14px;">No conversations yet.</p>';
         return;
       }
-      convItems.innerHTML = conversations.map(c => `
-        <div class="conv-row${c.conversation_id === activeConversationId ? ' active' : ''}" data-id="${c.conversation_id}">
+      convItems.innerHTML = conversations.map(c => {
+        const unread = Number(c.unread_count) || 0;
+        const badge = unread > 0 ? `<span class="conv-unread">${unread}</span>` : '';
+        const actions = box === 'requests'
+          ? `<div class="conv-request-actions">
+               <button class="btn btn-primary btn-sm btn-accept-req" data-id="${c.conversation_id}" data-name="${escapeHtml(convLabel(c))}">Accept</button>
+               <button class="btn btn-outline btn-sm btn-decline-req" data-id="${c.conversation_id}">Delete</button>
+             </div>`
+          : '';
+        return `
+        <div class="conv-row${c.conversation_id === activeConversationId ? ' active' : ''}${unread > 0 ? ' unread' : ''}" data-id="${c.conversation_id}" data-box="${box}">
           <span class="mock-avatar lg"></span>
-          <div><strong>${escapeHtml(convLabel(c))}</strong><p>${c.last_message ? escapeHtml(c.last_message) : 'No messages yet'}</p></div>
-          <div class="conv-meta"><span class="msg-time">${c.last_message_at ? timeAgo(c.last_message_at) : ''}</span></div>
-        </div>`).join('');
+          <div class="conv-main"><strong>${escapeHtml(convLabel(c))}</strong><p>${c.last_message ? escapeHtml(c.last_message) : 'No messages yet'}</p>${actions}</div>
+          <div class="conv-meta"><span class="msg-time">${c.last_message_at ? timeAgo(c.last_message_at) : ''}</span>${badge}</div>
+        </div>`;
+      }).join('');
     } catch {
       convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Could not load conversations.</p>';
     }
   }
+
+  // Inbox / Requests tab switching.
+  document.querySelectorAll('.conv-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.conv-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeBox = tab.dataset.box;
+      loadConversations();
+    });
+  });
 
   async function openConversation(id, label) {
     activeConversationId = id;
@@ -1308,12 +1475,40 @@ async function renderMessagesFeed() {
     }
   }
 
-  convItems.addEventListener('click', e => {
+  convItems.addEventListener('click', async e => {
+    const acceptBtn = e.target.closest('.btn-accept-req');
+    if (acceptBtn) {
+      const id = acceptBtn.dataset.id;
+      const res = await apiFetch(`messages/${id}/accept`, { method: 'POST' });
+      if (res.ok && res.data?.success) {
+        activeBox = 'inbox';
+        document.querySelectorAll('.conv-tab').forEach(t => t.classList.toggle('active', t.dataset.box === 'inbox'));
+        await loadConversations();
+        openConversation(id, acceptBtn.dataset.name || 'Conversation');
+        refreshBadges();
+      }
+      return;
+    }
+    const declineBtn = e.target.closest('.btn-decline-req');
+    if (declineBtn) {
+      if (!confirm('Delete this message request? This cannot be undone.')) return;
+      const res = await apiFetch(`messages/${declineBtn.dataset.id}/decline`, { method: 'POST' });
+      if (res.ok && res.data?.success) { await loadConversations(); refreshBadges(); }
+      return;
+    }
     const row = e.target.closest('.conv-row');
     if (!row) return;
     const label = row.querySelector('strong')?.textContent || 'Conversation';
-    openConversation(row.dataset.id, label);
+    openConversation(row.dataset.id, label).then(() => { if (row.dataset.box !== 'requests') refreshBadges(); });
   });
+
+  // Refresh the requests-tab count + the global nav "Messages" badge.
+  async function refreshBadges() {
+    try {
+      const res = await apiFetch('messages/unread-count');
+      if (res.ok && res.data?.success) applyMessageBadges(res.data.data);
+    } catch { /* ignore */ }
+  }
 
   document.getElementById('backToConvList')?.addEventListener('click', () => {
     layout?.classList.remove('chat-open');
@@ -1353,7 +1548,8 @@ function initNewMessageCompose(loadConversations, openConversation) {
   if (!openBtn || !card) return;
 
   let selectedUser = null;
-  let searchTimer = null;
+  let allUsers = [];      // full directory, loaded once when the card opens
+  let directoryLoaded = false;
 
   function reset() {
     selectedUser = null;
@@ -1364,8 +1560,37 @@ function initNewMessageCompose(loadConversations, openConversation) {
     if (errEl) errEl.style.display = 'none';
   }
 
-  openBtn.addEventListener('click', () => {
+  function renderDirectory(term) {
+    const q = (term || '').trim().toLowerCase();
+    const list = q
+      ? allUsers.filter(u =>
+          (u.full_name || '').toLowerCase().includes(q) ||
+          (u.identifier || '').toLowerCase().includes(q))
+      : allUsers;
+    results.innerHTML = list.length
+      ? list.slice(0, 100).map(u => `
+        <div class="new-message-result" data-id="${u.user_id}" data-name="${escapeHtml(u.full_name)}">
+          <span class="mock-avatar"></span>
+          <div><strong>${escapeHtml(u.full_name)}</strong><span>${escapeHtml(ROLE_SLUG_LABELS[u.role_name] || u.role_name || '')}${u.department_name ? ' · ' + escapeHtml(u.department_name) : ''}</span></div>
+        </div>`).join('')
+      : '<p class="text-muted" style="padding:8px;">No matches.</p>';
+  }
+
+  async function loadDirectory() {
+    results.innerHTML = '<p class="text-muted" style="padding:8px;">Loading people…</p>';
+    const res = await apiFetch('users');
+    if (res.ok && res.data?.success) {
+      allUsers = res.data.data || [];
+      directoryLoaded = true;
+      renderDirectory('');
+    } else {
+      results.innerHTML = '<p class="text-muted" style="padding:8px;">Could not load the directory.</p>';
+    }
+  }
+
+  openBtn.addEventListener('click', async () => {
     card.classList.add('open');
+    if (!directoryLoaded) await loadDirectory(); else renderDirectory(searchInput.value);
     searchInput?.focus();
   });
   cancelBtn?.addEventListener('click', () => {
@@ -1373,25 +1598,9 @@ function initNewMessageCompose(loadConversations, openConversation) {
     reset();
   });
 
+  // Everyone is loaded up-front, so filtering is instant + client-side.
   searchInput?.addEventListener('input', () => {
-    clearTimeout(searchTimer);
-    const term = searchInput.value.trim();
-    if (term.length < 2) {
-      results.innerHTML = '';
-      return;
-    }
-    searchTimer = setTimeout(async () => {
-      const res = await apiFetch(`users/search?search=${encodeURIComponent(term)}`);
-      if (!res.ok || !res.data?.success) return;
-      const users = res.data.data;
-      results.innerHTML = users.length
-        ? users.map(u => `
-          <div class="new-message-result" data-id="${u.user_id}" data-name="${escapeHtml(u.full_name)}">
-            <span class="mock-avatar"></span>
-            <div><strong>${escapeHtml(u.full_name)}</strong><span>${escapeHtml(ROLE_SLUG_LABELS[u.role_name] || u.role_name)}${u.department_name ? ' · ' + escapeHtml(u.department_name) : ''}</span></div>
-          </div>`).join('')
-        : '<p class="text-muted" style="padding:8px;">No matches.</p>';
-    }, 250);
+    if (directoryLoaded) renderDirectory(searchInput.value);
   });
 
   results?.addEventListener('click', e => {

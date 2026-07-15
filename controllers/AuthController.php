@@ -87,6 +87,10 @@ class AuthController extends BaseController
             ]);
         }
 
+        // Lecturers must be vetted by their HOD before they're active on the
+        // platform; every other role is usable immediately on sign-up.
+        $approvalStatus = $data['role'] === ROLE_LECTURER ? 'pending' : 'approved';
+
         $userId = User::createUser([
             'full_name'       => $data['full_name'],
             'email'           => $data['email'],
@@ -95,6 +99,7 @@ class AuthController extends BaseController
             'role_id'         => $roleId,
             'department_id'   => $request->input('department_id'),
             'phone'           => $data['phone'],
+            'approval_status' => $approvalStatus,
             'notify_email'    => empty($channels) || in_array('email', $channels, true) ? 1 : 0,
             'notify_sms'      => in_array('sms', $channels, true) ? 1 : 0,
             'notify_whatsapp' => in_array('whatsapp', $channels, true) ? 1 : 0,

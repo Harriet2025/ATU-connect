@@ -32,6 +32,9 @@ CREATE TABLE users (
   notify_sms        TINYINT(1) NOT NULL DEFAULT 0,
   notify_whatsapp   TINYINT(1) NOT NULL DEFAULT 0,
   is_active         TINYINT(1) NOT NULL DEFAULT 1,
+  -- lecturers sign up 'pending' and must be approved by their HOD;
+  -- every other role is auto-'approved' on registration
+  approval_status   ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
   last_login_at     DATETIME NULL,
   created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -235,6 +238,9 @@ CREATE TABLE conversation_participants (
   conversation_id INT UNSIGNED NOT NULL,
   user_id         INT UNSIGNED NOT NULL,
   last_read_at    DATETIME NULL,
+  -- 'pending' = message request awaiting this participant's acceptance
+  -- (keeps unsolicited DMs out of the inbox); 'accepted' = in the inbox
+  status          ENUM('pending','accepted') NOT NULL DEFAULT 'accepted',
   joined_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (conversation_id, user_id),
   FOREIGN KEY (conversation_id) REFERENCES conversations(conversation_id) ON DELETE CASCADE,

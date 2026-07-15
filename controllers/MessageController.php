@@ -19,7 +19,22 @@ class MessageController extends BaseController
     public function conversations(Request $request): void
     {
         $this->requireAuth();
-        Response::success(Conversation::forUser(Auth::id()));
+        Response::success(Conversation::forUser(Auth::id(), 'inbox'));
+    }
+
+    // Pending message requests — unsolicited DMs kept out of the inbox
+    // until the recipient accepts them (spam gate).
+    public function requests(Request $request): void
+    {
+        $this->requireAuth();
+        Response::success(Conversation::forUser(Auth::id(), 'requests'));
+    }
+
+    // { inbox_unread, requests } — drives the nav badge + requests tab count.
+    public function unreadCount(Request $request): void
+    {
+        $this->requireAuth();
+        Response::success(Conversation::counts(Auth::id()));
     }
 
     public function show(Request $request, $conversationId): void
@@ -30,7 +45,33 @@ class MessageController extends BaseController
             Response::error('Forbidden. You are not part of this conversation.', HTTP_FORBIDDEN);
         }
 
-        Response::success(Message::forConversation((int) $conversationId));
+        $messages = Message::forConversation((int) $conversationId);
+        // Opening a thread marks it read for this user (clears its badge).
+        Conversation::markRead((int) $conversationId, Auth::id());
+        Response::success($messages);
+    }
+
+    // Accept a pending request → moves the thread into the inbox.
+    public function accept(Request $request, $conversationId): void
+    {
+        $this->requireAuth();
+        if (!Conversation::isParticipant((int) $conversationId, Auth::id())) {
+            Response::error('Forbidden. You are not part of this conversation.', HTTP_FORBIDDEN);
+        }
+        Conversation::setParticipantStatus((int) $conversationId, Auth::id(), 'accepted');
+        Response::success(null, 'Message request accepted.');
+    }
+
+    // Decline a pending request → deletes the thread (cascades to its
+    // messages), so a rejected/spam DM disappears for both sides.
+    public function decline(Request $request, $conversationId): void
+    {
+        $this->requireAuth();
+        if (Conversation::participantStatus((int) $conversationId, Auth::id()) !== 'pending') {
+            Response::error('This conversation is not a pending request.', HTTP_VALIDATION_ERROR);
+        }
+        Conversation::delete((int) $conversationId);
+        Response::success(null, 'Message request declined.');
     }
 
     public function store(Request $request): void
@@ -71,6 +112,10 @@ class MessageController extends BaseController
             'body'            => $body,
             'attachment_path' => $attachmentPath,
         ]);
+
+        // Sending (or replying) implies engagement, so the sender's own side
+        // is always in their inbox — e.g. replying to a request accepts it.
+        Conversation::setParticipantStatus((int) $conversationId, Auth::id(), 'accepted');
 
         $sender = User::find(Auth::id());
         $preview = $body ? mb_substr($body, 0, 120) : 'Sent an attachment.';

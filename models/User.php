@@ -46,6 +46,42 @@ class User extends BaseModel
         return $row ? (int) $row['role_id'] : null;
     }
 
+    // Lecturer accounts awaiting HOD approval. Not department-scoped: on
+    // this build lecturers don't pick a department at sign-up, so scoping
+    // by the HOD's own department would hide every real applicant.
+    public static function pendingLecturers(): array
+    {
+        $sql = "SELECT u.user_id, u.full_name, u.email, u.identifier, u.phone,
+                       u.department_id, d.department_name, u.created_at
+                FROM users u
+                JOIN roles r ON r.role_id = u.role_id AND r.role_name = 'lecturer'
+                LEFT JOIN departments d ON d.department_id = u.department_id
+                WHERE u.approval_status = 'pending'
+                ORDER BY u.created_at DESC";
+        return self::db()->query($sql)->fetchAll();
+    }
+
+    public static function setApprovalStatus(int $userId, string $status): void
+    {
+        $stmt = self::db()->prepare('UPDATE users SET approval_status = :s WHERE user_id = :id');
+        $stmt->execute(['s' => $status, 'id' => $userId]);
+    }
+
+    // Full directory for the "new message" picker — every other active
+    // account, so any user can start a (private, request-gated) chat.
+    public static function directory(int $excludeUserId): array
+    {
+        $sql = 'SELECT u.user_id, u.full_name, u.identifier, r.role_name, d.department_name
+                FROM users u
+                JOIN roles r ON r.role_id = u.role_id
+                LEFT JOIN departments d ON d.department_id = u.department_id
+                WHERE u.user_id != :exclude_id AND u.is_active = 1
+                ORDER BY u.full_name';
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute(['exclude_id' => $excludeUserId]);
+        return $stmt->fetchAll();
+    }
+
     // Lightweight directory search for the "New Message" recipient picker —
     // excludes the current user and returns only display-safe columns.
     public static function search(string $term, int $excludeUserId, ?string $role = null): array

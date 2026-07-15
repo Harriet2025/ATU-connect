@@ -3,6 +3,7 @@ namespace Helpers;
 
 use Models\Notification;
 use Models\User;
+use Helpers\SmsProvider;
 
 // =========================================================
 // NOTIFICATION DISPATCHER — in-app row + per-channel outbound reminder
@@ -45,10 +46,15 @@ class NotificationDispatcher
         self::log('EMAIL', $to, $subject, $body);
     }
 
-    // TODO: replace with real gateway call (e.g. Twilio, Hubtel, WhatsApp Cloud API) — logs only for this prototype.
+    // Sends via the configured SMS gateway (Vynfy). If SMS isn't configured
+    // (no API key/sender ID in env), SmsProvider::send() returns false and we
+    // fall back to logging — so the platform works normally either way.
     private static function sendSms(string $to, string $body): void
     {
         if ($to === '') {
+            return;
+        }
+        if (SmsProvider::send($to, $body)) {
             return;
         }
         self::log('SMS', $to, null, $body);
