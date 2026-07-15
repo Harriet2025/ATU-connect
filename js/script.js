@@ -1481,6 +1481,8 @@ async function renderMessagesFeed() {
   const chatSendBtn = document.getElementById('chatSendBtn');
   const layout = document.querySelector('.messages-layout');
   let activeConversationId = null;
+  let activeSectionId = null;     // set when a group channel (not a DM) is open
+  let activeCanPost = true;       // whether the current channel accepts posts
 
   const myId = await getMyUserId();
 
@@ -1492,8 +1494,35 @@ async function renderMessagesFeed() {
 
   let activeBox = 'inbox';
 
+  const SCOPE_ICON = { school: '🏛️', department: '🏢', course: '📘' };
+
+  async function loadSections() {
+    convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Loading channels…</p>';
+    try {
+      const res = await apiFetch('sections');
+      if (!res.ok || !res.data?.success) {
+        convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Could not load channels.</p>';
+        return;
+      }
+      const sections = res.data.data;
+      if (!sections.length) {
+        convItems.innerHTML = '<p class="text-muted" style="padding:14px;">No channels available.</p>';
+        return;
+      }
+      convItems.innerHTML = sections.map(s => `
+        <div class="conv-row section-row" data-section="${s.section_id}" data-name="${escapeHtml(s.name)}" data-canpost="${s.can_post ? 1 : 0}">
+          <span class="section-ico">${SCOPE_ICON[s.scope_type] || '#'}</span>
+          <div class="conv-main"><strong>${escapeHtml(s.name)}</strong><p>${s.last_message ? escapeHtml((s.last_sender ? s.last_sender + ': ' : '') + s.last_message) : (s.can_post ? 'Start the conversation' : 'No posts yet')}</p></div>
+          <div class="conv-meta"><span class="msg-time">${s.last_message_at ? timeAgo(s.last_message_at) : ''}</span>${s.can_post ? '' : '<span class="section-readonly">read-only</span>'}</div>
+        </div>`).join('');
+    } catch {
+      convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Could not load channels.</p>';
+    }
+  }
+
   async function loadConversations() {
     const box = activeBox;
+    if (box === 'channels') { await loadSections(); return; }
     const endpoint = box === 'requests' ? 'messages/requests' : 'messages';
     convItems.innerHTML = '<p class="text-muted" style="padding:14px;">Loading…</p>';
     try {
@@ -1540,8 +1569,20 @@ async function renderMessagesFeed() {
     });
   });
 
+  // Enable/disable the composer + placeholder based on posting rights.
+  function setComposer(canPost, placeholder) {
+    activeCanPost = canPost;
+    if (chatInput) {
+      chatInput.disabled = !canPost;
+      chatInput.placeholder = canPost ? (placeholder || 'Type a message…') : 'Read-only — you can’t post here';
+    }
+    if (chatSendBtn) chatSendBtn.disabled = !canPost;
+  }
+
   async function openConversation(id, label) {
     activeConversationId = id;
+    activeSectionId = null;
+    setComposer(true);
     convItems.querySelectorAll('.conv-row').forEach(r => r.classList.toggle('active', r.dataset.id == id));
     layout?.classList.add('chat-open');
     if (chatHeadName) chatHeadName.textContent = label;
@@ -1569,7 +1610,44 @@ async function renderMessagesFeed() {
     }
   }
 
+  // Open a group channel (school / department / class) in the chat pane.
+  async function openSection(id, label, canPost) {
+    activeSectionId = id;
+    activeConversationId = null;
+    convItems.querySelectorAll('.conv-row').forEach(r => r.classList.toggle('active', r.dataset.section == id));
+    layout?.classList.add('chat-open');
+    if (chatHeadName) chatHeadName.textContent = label;
+    if (chatHeadSub) chatHeadSub.textContent = canPost ? 'You can post in this channel' : 'Read-only channel';
+    chatBody.innerHTML = '<p class="text-muted">Loading messages…</p>';
+    try {
+      const res = await apiFetch(`sections/${id}/messages`);
+      if (!res.ok || !res.data?.success) {
+        chatBody.innerHTML = '<p class="text-muted">Could not load this channel.</p>';
+        return;
+      }
+      const { section, messages } = res.data.data;
+      setComposer(!!section.can_post);
+      if (!messages.length) {
+        chatBody.innerHTML = `<p class="text-muted">No posts yet.${section.can_post ? ' Be the first to post.' : ''}</p>`;
+        return;
+      }
+      chatBody.innerHTML = messages.map(m => {
+        const mine = myId && Number(m.sender_id) === Number(myId);
+        const who = escapeHtml(m.sender_name) + (m.sender_role ? ' · ' + escapeHtml(ROLE_SLUG_LABELS[m.sender_role] || m.sender_role) : '');
+        return `<div class="chat-bubble ${mine ? 'sent' : 'received'}">${!mine ? '<strong style="display:block;font-size:.72rem;opacity:.7;">' + who + '</strong>' : ''}${escapeHtml(m.body || '')}<span class="chat-bubble-time">${timeAgo(m.created_at)}</span></div>`;
+      }).join('');
+      chatBody.scrollTop = chatBody.scrollHeight;
+    } catch {
+      chatBody.innerHTML = '<p class="text-muted">Could not load this channel.</p>';
+    }
+  }
+
   convItems.addEventListener('click', async e => {
+    const sectionRow = e.target.closest('.section-row');
+    if (sectionRow) {
+      openSection(sectionRow.dataset.section, sectionRow.dataset.name || 'Channel', sectionRow.dataset.canpost === '1');
+      return;
+    }
     const acceptBtn = e.target.closest('.btn-accept-req');
     if (acceptBtn) {
       const id = acceptBtn.dataset.id;
@@ -1610,7 +1688,24 @@ async function renderMessagesFeed() {
 
   async function sendMessage() {
     const text = chatInput?.value.trim();
-    if (!text || !activeConversationId) return;
+    if (!text) return;
+
+    // Posting into a group channel.
+    if (activeSectionId) {
+      if (!activeCanPost) return;
+      const label = chatHeadName?.textContent || 'Channel';
+      const res = await apiFetch(`sections/${activeSectionId}/messages`, { method: 'POST', body: { body: text } });
+      if (res.ok && res.data?.success) {
+        chatInput.value = '';
+        openSection(activeSectionId, label, true);
+      } else {
+        showToast(res.data?.message || 'Could not post to this channel.', 'error');
+      }
+      return;
+    }
+
+    // Direct/group conversation.
+    if (!activeConversationId) return;
     const res = await apiFetch('messages', { method: 'POST', body: { conversation_id: activeConversationId, body: text } });
     if (res.ok && res.data?.success) {
       chatInput.value = '';

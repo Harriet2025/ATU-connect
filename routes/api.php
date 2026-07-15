@@ -83,6 +83,11 @@ $router->post('/api/messages', 'Controllers\\MessageController@store', $authCsrf
 $router->post('/api/messages/{id}/accept', 'Controllers\\MessageController@accept', $authCsrf);
 $router->post('/api/messages/{id}/decline', 'Controllers\\MessageController@decline', $authCsrf);
 
+// -------------------- Sections (group channels) --------------------
+$router->get('/api/sections', 'Controllers\\SectionController@index', $auth);
+$router->get('/api/sections/{id}/messages', 'Controllers\\SectionController@messages', $auth);
+$router->post('/api/sections/{id}/messages', 'Controllers\\SectionController@postMessage', $authCsrf);
+
 // -------------------- Users (message recipient picker) --------------------
 $router->get('/api/users/search', 'Controllers\\UserController@search', $auth);
 $router->get('/api/users', 'Controllers\\UserController@directory', $auth); // full directory

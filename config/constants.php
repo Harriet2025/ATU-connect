@@ -48,3 +48,15 @@ define('ANNOUNCEMENT_ROLES', [
     ROLE_FACULTY_EXECUTIVE, ROLE_HOD, ROLE_FACULTY_DEAN, ROLE_REGISTRAR_OFFICE,
     ROLE_STUDENT_AFFAIRS, ROLE_UNIVERSITY_MANAGEMENT, ROLE_ADMIN,
 ]);
+
+// Who may POST to a DEPARTMENT section (everyone in the dept can read it).
+// Any staff/executive role — the same set that can post announcements.
+define('DEPARTMENT_BROADCAST_ROLES', ANNOUNCEMENT_ROLES);
+
+// Who may POST to the SCHOOL-WIDE section (the whole school can read it).
+// Restricted to institution-level executives — not individual lecturers.
+define('SCHOOL_BROADCAST_ROLES', [
+    ROLE_SRC_EXECUTIVE, ROLE_JCRC_EXECUTIVE, ROLE_FACULTY_EXECUTIVE,
+    ROLE_FACULTY_DEAN, ROLE_REGISTRAR_OFFICE, ROLE_STUDENT_AFFAIRS,
+    ROLE_UNIVERSITY_MANAGEMENT, ROLE_ADMIN,
+]);

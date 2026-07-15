@@ -281,6 +281,28 @@ CREATE TABLE notifications (
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- ===================== SECTIONS (GROUP CHANNELS) =====================
+
+CREATE TABLE sections (
+  section_id   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  scope_type   ENUM('course','department','school') NOT NULL,
+  scope_id     INT UNSIGNED NULL,          -- course_id / department_id; NULL for school
+  name         VARCHAR(150) NOT NULL,
+  created_by   INT UNSIGNED NOT NULL,
+  created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE section_messages (
+  message_id   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  section_id   INT UNSIGNED NOT NULL,
+  sender_id    INT UNSIGNED NOT NULL,
+  body         TEXT NOT NULL,
+  created_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (section_id) REFERENCES sections(section_id) ON DELETE CASCADE,
+  FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- ===================== INDEXES =====================
 
 CREATE INDEX idx_notifications_user_unread ON notifications(user_id, is_read);
@@ -292,3 +314,5 @@ CREATE INDEX idx_assignment_submissions_assignment ON assignment_submissions(ass
 CREATE INDEX idx_course_registrations_course ON course_registrations(course_id);
 CREATE INDEX idx_users_role ON users(role_id);
 CREATE INDEX idx_users_department ON users(department_id);
+CREATE INDEX idx_section_messages_section ON section_messages(section_id, created_at);
+CREATE INDEX idx_sections_scope ON sections(scope_type, scope_id);
