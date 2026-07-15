@@ -5,24 +5,12 @@
 
 // Bumped whenever app files change so the activate handler below purges any
 // previously cached (now stale) copies on the user's device.
-const CACHE_NAME = 'atu-connect-v3';
+const CACHE_NAME = 'atu-connect-v4';
+// Only truly static assets are precached. HTML pages and js/script.js are
+// deliberately NOT precached — they change on every deploy, so we always
+// fetch them fresh from the network (see the network-first handler below)
+// and never risk serving a stale cached page/app to the user.
 const APP_SHELL = [
-  './index.html',
-  './login.html',
-  './dashboard.html',
-  './announcements.html',
-  './assignments.html',
-  './courses.html',
-  './messages.html',
-  './calendar.html',
-  './notice-board.html',
-  './notifications.html',
-  './profile.html',
-  './student.html',
-  './lecturer.html',
-  './admin.html',
-  './css/style.css',
-  './js/script.js',
   './manifest.json',
   './icons/icon.svg',
   './icons/icon-maskable.svg'
