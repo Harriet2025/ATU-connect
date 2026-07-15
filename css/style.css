@@ -663,6 +663,18 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 .notify-chip:has(input:checked){ border-color:var(--blue-500); background:var(--blue-100); color:var(--blue-700); }
 .notify-chip input{ accent-color:var(--blue-600); }
 
+/* Lecturer "courses you teach" multi-select on the register form */
+.reg-course-list{ display:flex; flex-direction:column; gap:8px; max-height:230px; overflow-y:auto; padding:2px; }
+.reg-course-chip{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:12px;
+  border:1.5px solid var(--border); background:var(--surface-2);
+  font-size:.85rem; font-weight:600; color:var(--text-700);
+  cursor:pointer; transition:border-color .15s ease, background .15s ease;
+}
+.reg-course-chip:has(input:checked){ border-color:var(--blue-500); background:var(--blue-100); color:var(--blue-700); }
+.reg-course-chip input{ accent-color:var(--blue-600); flex:none; }
+
 .btn-block{ width:100%; }
 .auth-switch{ text-align:center; margin-top:22px; font-size:.88rem; color:var(--text-500); }
 .auth-switch a{ color:var(--blue-600); font-weight:700; }

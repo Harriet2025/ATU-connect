@@ -89,6 +89,22 @@
       </div>
 
       <div class="view-panel" id="manageView">
+        <section class="panel" id="createAssignmentPanel" style="display:none;margin-bottom:18px;">
+          <div class="panel-head"><h3>Create an Assignment</h3></div>
+          <p class="text-muted" style="margin-bottom:10px;">Post an assignment to one of your courses. Every enrolled student is notified in-app and by email/SMS.</p>
+          <div class="hod-course-form">
+            <select class="field-input" id="newAssignCourse"><option value="">Loading your courses…</option></select>
+            <input class="field-input" id="newAssignTitle" placeholder="Assignment title (e.g. ERD Design Project)">
+            <textarea class="field-input" id="newAssignDesc" rows="3" placeholder="Instructions / description (optional)"></textarea>
+            <label class="field-label" for="newAssignDue">Due date &amp; time</label>
+            <input class="field-input" id="newAssignDue" type="datetime-local">
+            <input class="field-input" id="newAssignMax" type="number" min="1" value="100" placeholder="Max score">
+            <label class="field-label" for="newAssignFile">Brief / attachment (optional)</label>
+            <input class="field-input" id="newAssignFile" type="file">
+            <button class="btn btn-primary" id="createAssignmentBtn">Post Assignment</button>
+            <p id="createAssignmentResult" style="margin-top:4px;font-size:.85rem;display:none;"></p>
+          </div>
+        </section>
         <div class="assign-grid" id="manageAssignmentsGrid">
           <div class="assign-card-full">
             <div class="assign-top"><div><h4>ERD Design Project</h4><p>Database Systems · Level 300</p><p>Due: Jul 13, 11:59pm</p></div><div class="assign-icon-actions"><button title="Edit">✎</button><button title="Delete">🗑</button></div></div>

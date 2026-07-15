@@ -149,10 +149,13 @@
           </select>
         </div>
 
-        <!-- Lecturers: the course(s) they teach -->
+        <!-- Lecturers: the course(s) they teach (pick from the catalogue) -->
         <div id="regCourseGroup" style="display:none;">
-          <label class="field-label" for="regCourse">Course(s) you teach</label>
-          <input class="field-input" type="text" id="regCourse" placeholder="e.g. CS 204 — Database Management Systems">
+          <label class="field-label">Course(s) you teach</label>
+          <p class="text-muted" style="font-size:.8rem;margin:0 0 8px;">Tick every course you'll teach this semester. Your dashboard, assignments and class messages are scoped to these.</p>
+          <div id="regCourseList" class="reg-course-list">
+            <p class="text-muted" style="font-size:.85rem;">Loading courses…</p>
+          </div>
         </div>
 
         <label class="field-label" for="regEmail" id="regEmailLabel">Student Email</label>

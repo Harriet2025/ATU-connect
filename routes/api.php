@@ -57,7 +57,9 @@ $router->post('/api/submissions/{id}/grade', 'Controllers\\AssignmentController@
 // -------------------- Courses --------------------
 $router->get('/api/courses', 'Controllers\\CourseController@index', $auth);
 $router->post('/api/courses', 'Controllers\\CourseController@store', $authCsrf); // HOD/admin
-// "mine" registered before /courses/{id} so its non-numeric path isn't swallowed.
+// "catalog" (public) + "mine" registered before /courses/{id} so their
+// non-numeric paths aren't swallowed by the {id} pattern.
+$router->get('/api/courses/catalog', 'Controllers\\CourseController@catalog'); // public — registration form
 $router->get('/api/courses/mine', 'Controllers\\CourseController@mine', $auth); // lecturer
 $router->get('/api/courses/{id}', 'Controllers\\CourseController@show', $auth);
 $router->put('/api/courses/{id}', 'Controllers\\CourseController@update', $authCsrf); // HOD/admin

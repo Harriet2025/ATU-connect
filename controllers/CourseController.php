@@ -20,7 +20,21 @@ class CourseController extends BaseController
     public function index(Request $request): void
     {
         $this->requireAuth();
+        if (Auth::role() === ROLE_STUDENT) {
+            $student = Student::findByUserId(Auth::id());
+            if ($student) {
+                Response::success(Course::feedForStudent((int) $student['student_id']));
+            }
+        }
         Response::success(Course::feed());
+    }
+
+    // GET /api/courses/catalog — public (no auth): the semester course list
+    // for the registration form's "courses you teach" picker, which runs
+    // before the lecturer has a session.
+    public function catalog(Request $request): void
+    {
+        Response::success(Course::catalog());
     }
 
     public function show(Request $request, $id): void

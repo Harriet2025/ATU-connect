@@ -131,12 +131,37 @@ class AuthController extends BaseController
                 'level'     => $request->input('level'),
             ]);
         } elseif ($data['role'] === ROLE_LECTURER) {
-            Lecturer::create([
+            // The lecturer picks the catalogue courses they teach at sign-up.
+            // Accept either an array of course_ids (new multi-select picker)
+            // or the legacy free-text courses_taught field.
+            $courseIds = $request->input('course_ids', []);
+            if (!is_array($courseIds)) {
+                $courseIds = array_filter(array_map('trim', explode(',', (string) $courseIds)));
+            }
+            $courseIds = array_values(array_filter(array_map('intval', $courseIds)));
+
+            // Store a readable summary of the chosen courses for the profile.
+            $coursesText = $request->input('courses_taught');
+            if (!$coursesText && $courseIds) {
+                $names = array_map(
+                    fn($c) => $c['course_code'] . ' — ' . $c['course_name'],
+                    array_filter(\Models\Course::catalog(), fn($c) => in_array((int) $c['course_id'], $courseIds, true))
+                );
+                $coursesText = implode(', ', $names);
+            }
+
+            $lecturerId = Lecturer::create([
                 'user_id'         => $userId,
                 'staff_title'     => $request->input('staff_title'),
                 'office_location' => $request->input('office_location'),
-                'courses_taught'  => $request->input('courses_taught'),
+                'courses_taught'  => $coursesText,
             ]);
+
+            // Claim the (currently unassigned) courses for this lecturer so
+            // their dashboard/assignments are scoped to them straight away.
+            if ($courseIds) {
+                \Models\Course::claimCourses((int) $lecturerId, $courseIds);
+            }
         }
 
         $user = User::find($userId);

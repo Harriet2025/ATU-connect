@@ -409,6 +409,23 @@ function initAuthPage() {
     }).catch(() => { regDepartment.innerHTML = '<option value="">Could not load departments</option>'; });
   }
 
+  // Populate the lecturer "courses you teach" picker from the public course
+  // catalogue (works pre-login). Each is a checkbox the lecturer ticks.
+  const regCourseList = document.getElementById('regCourseList');
+  if (regCourseList) {
+    apiFetch('courses/catalog').then(res => {
+      if (res.ok && res.data?.success && res.data.data.length) {
+        regCourseList.innerHTML = res.data.data.map(c => `
+          <label class="reg-course-chip">
+            <input type="checkbox" class="reg-course-cb" value="${c.course_id}">
+            <span>${escapeHtml(c.course_code)} — ${escapeHtml(c.course_name)}</span>
+          </label>`).join('');
+      } else {
+        regCourseList.innerHTML = '<p class="text-muted" style="font-size:.85rem;">No courses available yet.</p>';
+      }
+    }).catch(() => { regCourseList.innerHTML = '<p class="text-muted" style="font-size:.85rem;">Could not load courses.</p>'; });
+  }
+
   // Field-level error helpers shared by both forms.
   function clearFieldErrors(fieldMap) {
     Object.values(fieldMap).forEach(inputId => {
@@ -523,7 +540,7 @@ function initAuthPage() {
         const dept = document.getElementById('regDepartment')?.value || '';
         if (dept) payload.department_id = dept;
         if (role === 'lecturer') {
-          payload.courses_taught = document.getElementById('regCourse')?.value.trim() || '';
+          payload.course_ids = Array.from(document.querySelectorAll('.reg-course-cb:checked')).map(cb => cb.value);
         }
       }
 
@@ -1192,7 +1209,7 @@ async function renderAssignmentsFeed() {
 
         return `
           <div class="assign-card-full" data-id="${a.assignment_id}">
-            <div class="assign-top"><div><h4>${escapeHtml(a.title)}</h4><p>${a.description ? escapeHtml(a.description) : ''}</p><p>Due: ${a.due_date ? new Date(a.due_date.replace(' ', 'T')).toLocaleString() : 'TBA'}</p></div>${badge}</div>
+            <div class="assign-top"><div><h4>${escapeHtml(a.title)}</h4><p>${escapeHtml([a.course_code, a.course_name].filter(Boolean).join(' · '))}</p><p>Due: ${a.due_date ? new Date(a.due_date.replace(' ', 'T')).toLocaleString() : 'TBA'}</p></div>${badge}</div>
             <div class="assign-foot"><span class="text-muted">${footNote}</span>${actionBtn}
             <input type="file" class="assignment-file-input" data-id="${a.assignment_id}" style="display:none;"></div>
           </div>`;
@@ -1225,28 +1242,93 @@ async function renderAssignmentsFeed() {
   }
 
   if (manageGrid) {
-    const canManage = user && (user.role === 'lecturer' || user.role === 'administrator');
+    const isLecturer = user && user.role === 'lecturer';
+    const isOverseer = user && (user.role === 'hod' || user.role === 'administrator');
+    const canManage = isLecturer || isOverseer;
+
+    // Lecturers get the "Create an Assignment" form (scoped to their courses).
+    if (isLecturer) initCreateAssignment();
+
     if (!canManage) {
-      manageGrid.innerHTML = '<p class="text-muted">Only lecturers can manage assignments here.</p>';
+      manageGrid.innerHTML = '<p class="text-muted">Only lecturers and department heads can manage assignments here.</p>';
     } else if (!assignments.length) {
-      manageGrid.innerHTML = '<p class="text-muted">No assignments created yet.</p>';
+      manageGrid.innerHTML = isLecturer
+        ? '<p class="text-muted">You haven\'t posted any assignments yet. Use the form above to create one.</p>'
+        : '<p class="text-muted">No assignments have been posted yet.</p>';
     } else {
-      manageGrid.innerHTML = '<p class="text-muted">Loading submission counts…</p>';
-      const cards = await Promise.all(assignments.map(async a => {
-        let count = 0;
-        try {
-          const subRes = await apiFetch(`assignments/${a.assignment_id}/submissions`);
-          if (subRes.ok && subRes.data?.success) count = subRes.data.data.length;
-        } catch { /* offline */ }
+      manageGrid.innerHTML = assignments.map(a => {
+        const enrolled = Number(a.enrolled_count) || 0;
+        const submitted = Number(a.submitted_count) || 0;
+        const pending = Math.max(enrolled - submitted, 0);
+        const pct = enrolled ? Math.round((submitted / enrolled) * 100) : 0;
+        const courseLine = [a.course_code, a.course_name].filter(Boolean).join(' · ');
+        const lecturerLine = a.lecturer_name ? ` · ${escapeHtml(a.lecturer_name)}` : '';
         return `
           <div class="assign-card-full" data-id="${a.assignment_id}">
-            <div class="assign-top"><div><h4>${escapeHtml(a.title)}</h4><p>Due: ${a.due_date ? new Date(a.due_date.replace(' ', 'T')).toLocaleString() : 'TBA'}</p></div></div>
-            <div class="assign-foot"><span class="text-muted">${count} submission${count === 1 ? '' : 's'}</span></div>
+            <div class="assign-top"><div>
+              <h4>${escapeHtml(a.title)}</h4>
+              <p>${escapeHtml(courseLine)}${lecturerLine}</p>
+              <p>Due: ${a.due_date ? new Date(a.due_date.replace(' ', 'T')).toLocaleString() : 'TBA'}</p>
+            </div></div>
+            <div class="mock-progress"><div class="mock-progress-bar" style="width:${pct}%"></div></div>
+            <div class="assign-foot"><span class="text-muted">${submitted} / ${enrolled} submitted · ${pending} yet to submit</span></div>
           </div>`;
-      }));
-      manageGrid.innerHTML = cards.join('');
+      }).join('');
     }
   }
+}
+
+// Wires the lecturer "Create an Assignment" form on assignments.html. Runs
+// once — populates the course picker from /api/courses/mine and posts to
+// /api/assignments (multipart, so an optional brief file can ride along).
+let _createAssignmentWired = false;
+async function initCreateAssignment() {
+  const panel = document.getElementById('createAssignmentPanel');
+  if (!panel || _createAssignmentWired) return;
+  _createAssignmentWired = true;
+  panel.style.display = '';
+
+  const courseSel = document.getElementById('newAssignCourse');
+  const res = await apiFetch('courses/mine');
+  const courses = (res.ok && res.data?.success) ? res.data.data : [];
+  if (!courses.length) {
+    courseSel.innerHTML = '<option value="">No courses assigned to you yet</option>';
+  } else {
+    courseSel.innerHTML = courses.map(c =>
+      `<option value="${c.course_id}">${escapeHtml(c.course_code)} — ${escapeHtml(c.course_name)}</option>`).join('');
+  }
+
+  const out = document.getElementById('createAssignmentResult');
+  document.getElementById('createAssignmentBtn')?.addEventListener('click', async () => {
+    const courseId = courseSel.value;
+    const title = document.getElementById('newAssignTitle')?.value.trim() || '';
+    const due = document.getElementById('newAssignDue')?.value || '';
+    const showMsg = (msg, ok) => { if (out) { out.style.display = ''; out.style.color = ok ? 'var(--success)' : 'var(--danger)'; out.textContent = msg; } };
+    if (!courseId) return showMsg('Pick one of your courses.', false);
+    if (!title) return showMsg('Give the assignment a title.', false);
+    if (!due) return showMsg('Set a due date.', false);
+
+    const fd = new FormData();
+    fd.append('course_id', courseId);
+    fd.append('title', title);
+    fd.append('description', document.getElementById('newAssignDesc')?.value.trim() || '');
+    fd.append('due_date', due.replace('T', ' ') + (due.length === 16 ? ':00' : ''));
+    fd.append('max_score', document.getElementById('newAssignMax')?.value || '100');
+    const file = document.getElementById('newAssignFile')?.files?.[0];
+    if (file) fd.append('brief_file', file);
+
+    const btn = document.getElementById('createAssignmentBtn');
+    if (btn) btn.disabled = true;
+    const r = await apiFetch('assignments', { method: 'POST', body: fd });
+    if (btn) btn.disabled = false;
+    if (r.ok && r.data?.success) {
+      showMsg('Assignment posted and students notified.', true);
+      ['newAssignTitle', 'newAssignDesc', 'newAssignDue', 'newAssignFile'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      renderAssignmentsFeed();
+    } else {
+      showMsg(r.data?.message || 'Could not post assignment.', false);
+    }
+  });
 }
 
 // =========================================================
@@ -1274,14 +1356,25 @@ async function renderCoursesFeed() {
       grid.innerHTML = '<p class="text-muted">No courses yet — check back once your department publishes the semester\'s course list.</p>';
       return;
     }
-    grid.innerHTML = courses.map(c => `
+    grid.innerHTML = courses.map(c => {
+      const registered = Number(c.is_registered) === 1;
+      let action;
+      if (user?.role === 'student') {
+        action = registered
+          ? `<button class="btn btn-primary btn-block btn-register-course" data-id="${c.course_id}" disabled>✓ Registered</button>`
+          : `<button class="btn btn-outline btn-block btn-register-course" data-id="${c.course_id}">Register</button>`;
+      } else {
+        action = `<a href="assignments.html" class="btn btn-outline btn-block">View Assignments</a>`;
+      }
+      return `
       <div class="course-card" data-id="${c.course_id}">
         <span class="course-code">${escapeHtml(c.course_code)}</span>
         <h3>${escapeHtml(c.course_name)}</h3>
-        <p>${c.lecturer_name ? escapeHtml(c.lecturer_name) : 'Lecturer TBA'} · ${c.credits ?? '—'} Credits</p>
+        <p>${c.lecturer_name ? escapeHtml(c.lecturer_name) : 'Lecturer TBA'}</p>
         <div class="course-stats"><div><strong>${c.assignment_count ?? 0}</strong>Assignments</div><div><strong>${c.student_count ?? 0}</strong>Students</div></div>
-        ${user?.role === 'student' ? `<button class="btn btn-outline btn-block btn-register-course" data-id="${c.course_id}">Register</button>` : '<a href="assignments.html" class="btn btn-outline btn-block">View Course</a>'}
-      </div>`).join('');
+        ${action}
+      </div>`;
+    }).join('');
 
     grid.addEventListener('click', async e => {
       const btn = e.target.closest('.btn-register-course');

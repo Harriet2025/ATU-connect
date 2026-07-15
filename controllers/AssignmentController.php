@@ -24,8 +24,25 @@ class AssignmentController extends BaseController
         $this->requireAuth();
 
         $courseId = $request->query('course_id');
-        $assignments = $courseId ? Assignment::forCourse((int) $courseId) : Assignment::all('due_date DESC');
-        Response::success($assignments);
+        if ($courseId) {
+            Response::success(Assignment::forCourse((int) $courseId));
+        }
+
+        // Otherwise scope to the caller's role:
+        //  • student  → assignments on courses they're actively enrolled on
+        //  • lecturer → assignments on the courses they teach (with submit stats)
+        //  • HOD/admin/other staff → every assignment (oversight), with stats
+        $role = Auth::role();
+        if ($role === ROLE_STUDENT) {
+            $student = Student::findByUserId(Auth::id());
+            Response::success($student ? Assignment::forStudentEnrolled((int) $student['student_id']) : []);
+        }
+        if ($role === ROLE_LECTURER) {
+            $lecturer = \Models\Lecturer::findByUserId(Auth::id());
+            Response::success($lecturer ? Assignment::forLecturerWithStats((int) $lecturer['lecturer_id']) : []);
+        }
+
+        Response::success(Assignment::allWithStats());
     }
 
     public function show(Request $request, $id): void
@@ -48,6 +65,17 @@ class AssignmentController extends BaseController
             'title'     => 'required|max:200',
             'due_date'  => 'required|date',
         ]);
+
+        // Ownership: a lecturer may only post assignments to a course they
+        // actually teach (course.lecturer_id maps back to this user).
+        $course = Course::find((int) $data['course_id']);
+        if (!$course) {
+            Response::error('Course not found.', HTTP_NOT_FOUND);
+        }
+        $lecturer = \Models\Lecturer::findByUserId(Auth::id());
+        if (!$lecturer || (int) $course['lecturer_id'] !== (int) $lecturer['lecturer_id']) {
+            Response::error('You can only post assignments to a course you teach.', HTTP_FORBIDDEN);
+        }
 
         $briefFile = null;
         $file = $request->file('brief_file');
@@ -129,7 +157,7 @@ class AssignmentController extends BaseController
 
     public function submissions(Request $request, $id): void
     {
-        $this->requireRole([ROLE_LECTURER, ROLE_ADMIN]);
+        $this->requireRole([ROLE_LECTURER, ROLE_HOD, ROLE_ADMIN]);
 
         if (!Assignment::find((int) $id)) {
             Response::error('Assignment not found.', HTTP_NOT_FOUND);
