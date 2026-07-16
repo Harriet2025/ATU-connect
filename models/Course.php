@@ -61,6 +61,7 @@ class Course extends BaseModel
     {
         $sql = 'SELECT c.*, u.full_name AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
+                        (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count
                  FROM courses c
                  LEFT JOIN lecturers l ON l.lecturer_id = c.lecturer_id
@@ -76,6 +77,7 @@ class Course extends BaseModel
     {
         $sql = 'SELECT c.*, u.full_name AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
+                        (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count
                  FROM courses c
                  LEFT JOIN lecturers l ON l.lecturer_id = c.lecturer_id
@@ -93,6 +95,7 @@ class Course extends BaseModel
     {
         $sql = 'SELECT c.*, u.full_name AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
+                        (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count,
                         EXISTS(SELECT 1 FROM course_registrations cr2
                                 WHERE cr2.course_id = c.course_id AND cr2.student_id = :sid AND cr2.status = "active") AS is_registered

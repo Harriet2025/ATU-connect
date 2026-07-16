@@ -1527,7 +1527,7 @@ async function renderCoursesFeed() {
         <span class="course-code">${escapeHtml(c.course_code)}</span>
         <h3>${escapeHtml(c.course_name)}</h3>
         <p>${c.lecturer_name ? escapeHtml(c.lecturer_name) : 'Lecturer TBA'}</p>
-        <div class="course-stats"><div><strong>${c.assignment_count ?? 0}</strong>Assignments</div><div><strong>${c.student_count ?? 0}</strong>Students</div></div>
+        <div class="course-stats"><div><strong>${c.assignment_count ?? 0}</strong>Assignments</div><div><strong>${c.due_count ?? 0}</strong>Due</div></div>
         ${action}
       </div>`;
     };
