@@ -69,6 +69,24 @@ class Course extends BaseModel
         return self::db()->query($sql)->fetchAll();
     }
 
+    // Same shape as feed() but scoped to the courses one lecturer teaches —
+    // powers the lecturer's "My Courses" grid + dashboard (they should only
+    // ever see their own courses, not the whole catalogue).
+    public static function feedForLecturer(int $lecturerId): array
+    {
+        $sql = 'SELECT c.*, u.full_name AS lecturer_name,
+                        (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
+                        (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count
+                 FROM courses c
+                 LEFT JOIN lecturers l ON l.lecturer_id = c.lecturer_id
+                 LEFT JOIN users u ON u.user_id = l.user_id
+                 WHERE c.lecturer_id = :lid
+                 ORDER BY c.course_name';
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute(['lid' => $lecturerId]);
+        return $stmt->fetchAll();
+    }
+
     // Same shape as feed() but with an is_registered flag for one student,
     // so the "My Courses" grid can show Registered vs Register per card.
     public static function feedForStudent(int $studentId): array

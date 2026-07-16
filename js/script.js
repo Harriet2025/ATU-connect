@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNoticeBoardFeed();
   renderNotificationsFeed();
   renderHodManagement();
+  renderLecturerDashboard();
   updateMessageBadges();
   initSmsTest();
   initClassMessage();
@@ -1121,12 +1122,50 @@ async function renderAnnouncementsFeed() {
     if (newBtn) newBtn.style.display = 'none';
     if (composer) composer.style.display = 'none';
   } else if (newBtn && composer) {
+    const deptSelect = document.getElementById('composerDept');
+    const audienceSelect = document.getElementById('composerAudience');
+    const user = getCurrentUser();
+    // Only HODs (and admins) may target a department's teaching staff.
+    const canTargetLecturers = user && (user.role === 'hod' || user.role === 'administrator');
+
+    // Populate the department picker so the author can scope the announcement
+    // to a single department (or leave it whole-school). Individuals are
+    // reached through the Messages page, not the composer.
+    if (deptSelect) {
+      apiFetch('departments').then(res => {
+        if (res.ok && res.data?.success && res.data.data.length) {
+          deptSelect.insertAdjacentHTML('beforeend',
+            res.data.data.map(d => `<option value="${d.department_id}">${escapeHtml(d.department_name)}</option>`).join(''));
+        }
+      }).catch(() => { /* offline — whole-school still available */ });
+    }
+
+    // The "Lecturers only" audience is a staff broadcast — HOD/admin only, and
+    // it only makes sense once a specific department is chosen.
+    function syncAudience() {
+      if (!audienceSelect) return;
+      const deptChosen = deptSelect && deptSelect.value !== '';
+      const showLecturers = canTargetLecturers && deptChosen;
+      let opt = audienceSelect.querySelector('option[value="lecturers"]');
+      if (showLecturers && !opt) {
+        audienceSelect.insertAdjacentHTML('beforeend', '<option value="lecturers">Lecturers only</option>');
+      } else if (!showLecturers && opt) {
+        if (audienceSelect.value === 'lecturers') audienceSelect.value = 'all';
+        opt.remove();
+      }
+      audienceSelect.disabled = !deptChosen;
+    }
+    deptSelect?.addEventListener('change', syncAudience);
+    syncAudience();
+
     const publishBtn = document.getElementById('composerPublish');
     publishBtn?.addEventListener('click', async () => {
       const title = document.getElementById('composerTitle')?.value.trim();
       const body = document.getElementById('composerBody')?.value.trim();
       const categoryId = categorySelect?.value;
       const priority = document.getElementById('composerPriority')?.value || 'normal';
+      const departmentId = deptSelect?.value || '';
+      const audience = (departmentId && audienceSelect) ? audienceSelect.value : 'all';
       const file = document.getElementById('composerAttachment')?.files?.[0];
       if (!title || !body || !categoryId) {
         showToast('Title, body and category are required.', 'error');
@@ -1140,16 +1179,21 @@ async function renderAnnouncementsFeed() {
         fd.append('body', body);
         fd.append('category_id', categoryId);
         fd.append('priority', priority);
+        if (departmentId) { fd.append('department_id', departmentId); fd.append('audience', audience); }
         fd.append('attachment', file);
         res = await apiFetch('announcements', { method: 'POST', body: fd });
       } else {
-        res = await apiFetch('announcements', { method: 'POST', body: { title, body, category_id: categoryId, priority } });
+        const payload = { title, body, category_id: categoryId, priority };
+        if (departmentId) { payload.department_id = departmentId; payload.audience = audience; }
+        res = await apiFetch('announcements', { method: 'POST', body: payload });
       }
 
       if (res.ok && res.data?.success) {
         document.getElementById('composerTitle').value = '';
         document.getElementById('composerBody').value = '';
         if (document.getElementById('composerAttachment')) document.getElementById('composerAttachment').value = '';
+        if (deptSelect) deptSelect.value = '';
+        syncAudience();
         composer.classList.remove('open');
         load();
       } else {
@@ -1170,11 +1214,39 @@ async function renderAssignmentsFeed() {
   if (!myGrid && !manageGrid) return;
 
   const user = getCurrentUser();
+
+  // Deep-link from a course card: ?course=ID scopes this page to a single
+  // course's assignments (and, for a lecturer, opens the Manage tab with the
+  // create-assignment form pre-set to that course).
+  const urlParams = new URLSearchParams(location.search);
+  const courseFilter = urlParams.get('course');
+  const courseCode = urlParams.get('code');
+
   let assignments = [];
   try {
     const res = await apiFetch('assignments');
     if (res.ok && res.data?.success) assignments = res.data.data;
   } catch { /* offline */ }
+
+  if (courseFilter) {
+    assignments = assignments.filter(a => String(a.course_id) === String(courseFilter));
+    const headTitle = document.querySelector('.content-head h1');
+    const headSub = document.querySelector('.content-head .text-muted');
+    if (headTitle) headTitle.textContent = courseCode ? `${courseCode} — Assignments` : 'Course Assignments';
+    if (headSub) headSub.textContent = 'Assignments for this course only. ';
+    if (headSub && !headSub.querySelector('a')) {
+      const back = document.createElement('a');
+      back.href = 'assignments.html';
+      back.className = 'link-muted';
+      back.textContent = 'View all assignments';
+      headSub.appendChild(back);
+    }
+    // For a lecturer, jump straight to the Manage tab so they can post one.
+    if (user && (user.role === 'lecturer' || user.role === 'hod' || user.role === 'administrator')) {
+      document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'manageView'));
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'manageView'));
+    }
+  }
 
   if (myGrid) {
     if (!assignments.length) {
@@ -1296,6 +1368,11 @@ async function initCreateAssignment() {
   } else {
     courseSel.innerHTML = courses.map(c =>
       `<option value="${c.course_id}">${escapeHtml(c.course_code)} — ${escapeHtml(c.course_name)}</option>`).join('');
+    // Pre-select the course when we arrived via a course card (?course=ID).
+    const preset = new URLSearchParams(location.search).get('course');
+    if (preset && courses.some(c => String(c.course_id) === String(preset))) {
+      courseSel.value = preset;
+    }
   }
 
   const out = document.getElementById('createAssignmentResult');
@@ -1332,6 +1409,68 @@ async function initCreateAssignment() {
 }
 
 // =========================================================
+// LECTURER DASHBOARD (dashboard.html) — a lecturer's home shows only
+// their own courses: the course outline plus, per assignment, how many
+// of the enrolled students have submitted. Hidden for every other role
+// (students/HOD/execs get their own dashboard sections).
+// =========================================================
+async function renderLecturerDashboard() {
+  const panel = document.getElementById('lecturerCoursesPanel');
+  if (!panel) return;
+
+  const user = getCurrentUser();
+  if (!user || user.role !== 'lecturer') { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+
+  const list = document.getElementById('lecturerCoursesList');
+  let data;
+  try {
+    const res = await apiFetch('dashboard/lecturer');
+    if (!res.ok || !res.data?.success) { list.innerHTML = '<p class="text-muted">Could not load your courses right now.</p>'; return; }
+    data = res.data.data;
+  } catch {
+    list.innerHTML = '<p class="text-muted">Could not load your courses right now.</p>';
+    return;
+  }
+
+  const courses = data.courses || [];
+  const stats = data.submission_stats || [];
+  if (!courses.length) {
+    list.innerHTML = '<p class="text-muted">You have no courses assigned yet. Your HOD assigns courses to lecturers.</p>';
+    return;
+  }
+
+  // Group the per-assignment submission stats under each course.
+  const statsByCourse = {};
+  stats.forEach(s => { (statsByCourse[s.course_code] ||= []).push(s); });
+
+  list.innerHTML = courses.map(c => {
+    const outline = c.description ? escapeHtml(c.description) : 'No course outline added yet.';
+    const rows = (statsByCourse[c.course_code] || []);
+    const assignHtml = rows.length ? rows.map(s => {
+      const total = Number(s.total) || 0;
+      const submitted = Number(s.submitted) || 0;
+      const pct = total ? Math.round((submitted / total) * 100) : 0;
+      return `
+        <div class="lect-assign-row">
+          <span>${escapeHtml(s.title)}</span>
+          <div class="mock-progress" style="flex:1;margin:0 10px;"><div class="mock-progress-bar" style="width:${pct}%"></div></div>
+          <span class="text-muted">${submitted}/${total} submitted</span>
+        </div>`;
+    }).join('') : '<p class="text-muted" style="margin:4px 0;">No assignments posted yet.</p>';
+
+    return `
+      <div class="lect-course-block" style="padding:12px 0;border-bottom:1px solid var(--border,#e5e7eb);">
+        <div class="assign-top"><div>
+          <h4 style="margin:0;">${escapeHtml(c.course_code)} — ${escapeHtml(c.course_name)}</h4>
+          <p class="text-muted" style="margin:4px 0;">${outline}</p>
+        </div><span class="mock-badge badge-gold">${Number(c.student_count) || rows.reduce((m, r) => Math.max(m, Number(r.total) || 0), 0)} students</span></div>
+        ${assignHtml}
+      </div>`;
+  }).join('');
+}
+
+// =========================================================
 // COURSES FEED (courses.html)
 // =========================================================
 function initCoursesPage() {
@@ -1352,19 +1491,36 @@ async function renderCoursesFeed() {
       return;
     }
     const courses = res.data.data;
+
+    // Keep the page heading honest per role.
+    const headTitle = document.querySelector('.content-head h1');
+    const headSub = document.querySelector('.content-head .text-muted');
+    if (user?.role === 'lecturer') {
+      if (headTitle) headTitle.textContent = 'My Courses';
+      if (headSub) headSub.textContent = 'The courses you teach this semester.';
+    } else if (user?.role && user.role !== 'student') {
+      if (headTitle) headTitle.textContent = 'Courses';
+      if (headSub) headSub.textContent = 'All courses across the department this semester.';
+    }
+
     if (!courses.length) {
-      grid.innerHTML = '<p class="text-muted">No courses yet — check back once your department publishes the semester\'s course list.</p>';
+      grid.innerHTML = user?.role === 'lecturer'
+        ? '<p class="text-muted">You have no courses assigned yet. Your HOD assigns courses to lecturers.</p>'
+        : '<p class="text-muted">No courses yet — check back once your department publishes the semester\'s course list.</p>';
       return;
     }
-    grid.innerHTML = courses.map(c => {
+
+    const card = c => {
       const registered = Number(c.is_registered) === 1;
+      const assignLink = `assignments.html?course=${c.course_id}&code=${encodeURIComponent(c.course_code)}`;
       let action;
       if (user?.role === 'student') {
         action = registered
-          ? `<button class="btn btn-primary btn-block btn-register-course" data-id="${c.course_id}" disabled>✓ Registered</button>`
+          ? `<a href="${assignLink}" class="btn btn-primary btn-block">View Assignments</a>`
           : `<button class="btn btn-outline btn-block btn-register-course" data-id="${c.course_id}">Register</button>`;
       } else {
-        action = `<a href="assignments.html" class="btn btn-outline btn-block">View Assignments</a>`;
+        // Lecturers land on the Manage tab of that course (post/track assignments).
+        action = `<a href="${assignLink}" class="btn btn-outline btn-block">View Assignments</a>`;
       }
       return `
       <div class="course-card" data-id="${c.course_id}">
@@ -1374,7 +1530,26 @@ async function renderCoursesFeed() {
         <div class="course-stats"><div><strong>${c.assignment_count ?? 0}</strong>Assignments</div><div><strong>${c.student_count ?? 0}</strong>Students</div></div>
         ${action}
       </div>`;
-    }).join('');
+    };
+    const heading = txt => `<h3 class="course-group-head" style="grid-column:1/-1;margin:4px 0;">${txt}</h3>`;
+
+    if (user?.role === 'student') {
+      // Split the catalogue: the courses they've registered for ("My Courses")
+      // sit up top; everything else is browsable to register for below.
+      const mine = courses.filter(c => Number(c.is_registered) === 1);
+      const others = courses.filter(c => Number(c.is_registered) !== 1);
+      let html = '';
+      html += heading(`My Courses (${mine.length})`);
+      html += mine.length ? mine.map(card).join('')
+        : '<p class="text-muted" style="grid-column:1/-1;">You haven\'t registered for any courses yet — pick from the list below.</p>';
+      if (others.length) {
+        html += heading('Browse & Register');
+        html += others.map(card).join('');
+      }
+      grid.innerHTML = html;
+    } else {
+      grid.innerHTML = courses.map(card).join('');
+    }
 
     grid.addEventListener('click', async e => {
       const btn = e.target.closest('.btn-register-course');

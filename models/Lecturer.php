@@ -17,6 +17,18 @@ class Lecturer extends BaseModel
         return $rows[0] ?? null;
     }
 
+    // user_ids of every lecturer attached to a department — powers the
+    // "Lecturers only" announcement audience (HOD broadcast to staff).
+    public static function lecturerUserIdsInDepartment(int $departmentId): array
+    {
+        $sql = 'SELECT u.user_id FROM lecturers l
+                JOIN users u ON u.user_id = l.user_id
+                WHERE u.department_id = :dept';
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute(['dept' => $departmentId]);
+        return array_map('intval', array_column($stmt->fetchAll(), 'user_id'));
+    }
+
     // Approved lecturers only — powers the HOD's "assign lecturer" dropdown
     // when creating/editing a course.
     public static function approvedList(): array

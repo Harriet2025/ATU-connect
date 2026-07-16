@@ -10,6 +10,7 @@ use Models\Announcement;
 use Models\AnnouncementAttachment;
 use Models\AnnouncementCategory;
 use Models\Student;
+use Models\Lecturer;
 use Helpers\NotificationDispatcher;
 
 // =========================================================
@@ -87,9 +88,24 @@ class AnnouncementController extends BaseController
 
         $departmentId = $request->input('department_id');
         if ($departmentId) {
-            foreach (Student::studentUserIdsInDepartment((int) $departmentId) as $studentUserId) {
+            // audience selects who in the department is notified:
+            //   all       — every student in the department (default)
+            //   lecturers — only lecturers in the department (HOD/admin staff
+            //               broadcast; restricted so a plain lecturer can't
+            //               blast the whole department's teaching staff)
+            $audience = $request->input('audience', 'all');
+            if ($audience === 'lecturers' && !in_array(Auth::role(), [ROLE_HOD, ROLE_ADMIN], true)) {
+                $audience = 'all';
+            }
+
+            $recipients = $audience === 'lecturers'
+                ? Lecturer::lecturerUserIdsInDepartment((int) $departmentId)
+                : Student::studentUserIdsInDepartment((int) $departmentId);
+
+            foreach ($recipients as $recipientUserId) {
+                if ((int) $recipientUserId === Auth::id()) continue;
                 NotificationDispatcher::notify(
-                    $studentUserId,
+                    $recipientUserId,
                     'announcement',
                     'New announcement: ' . $data['title'],
                     mb_substr($data['body'], 0, 200),

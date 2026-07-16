@@ -20,12 +20,23 @@ class CourseController extends BaseController
     public function index(Request $request): void
     {
         $this->requireAuth();
-        if (Auth::role() === ROLE_STUDENT) {
+        $role = Auth::role();
+
+        // Students get every course flagged with their own registration state
+        // (the grid splits it into "My Courses" vs "Browse" client-side).
+        if ($role === ROLE_STUDENT) {
             $student = Student::findByUserId(Auth::id());
-            if ($student) {
-                Response::success(Course::feedForStudent((int) $student['student_id']));
-            }
+            Response::success($student ? Course::feedForStudent((int) $student['student_id']) : []);
         }
+
+        // A lecturer only ever sees the courses they teach — never the whole
+        // catalogue.
+        if ($role === ROLE_LECTURER) {
+            $lecturer = Lecturer::findByUserId(Auth::id());
+            Response::success($lecturer ? Course::feedForLecturer((int) $lecturer['lecturer_id']) : []);
+        }
+
+        // HOD / admin / other staff — full catalogue for oversight.
         Response::success(Course::feed());
     }
 
