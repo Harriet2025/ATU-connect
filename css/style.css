@@ -356,8 +356,9 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
    ========================================================= */
 .roles{ padding:100px 24px; background:var(--surface-2); }
 .roles-grid{
-  max-width:1000px; margin:0 auto;
-  display:grid; grid-template-columns:repeat(4, 1fr); gap:20px;
+  max-width:1040px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(4, minmax(0, 240px));
+  justify-content:center; gap:20px;
 }
 .role-card{
   position:relative;
