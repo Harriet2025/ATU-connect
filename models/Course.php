@@ -59,7 +59,8 @@ class Course extends BaseModel
     // as Announcement::feed().
     public static function feed(): array
     {
-        $sql = 'SELECT c.*, u.full_name AS lecturer_name,
+        $sql = 'SELECT c.*,
+                        CASE WHEN u.approval_status = "approved" THEN u.full_name ELSE NULL END AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count
@@ -75,7 +76,8 @@ class Course extends BaseModel
     // ever see their own courses, not the whole catalogue).
     public static function feedForLecturer(int $lecturerId): array
     {
-        $sql = 'SELECT c.*, u.full_name AS lecturer_name,
+        $sql = 'SELECT c.*,
+                        CASE WHEN u.approval_status = "approved" THEN u.full_name ELSE NULL END AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count
@@ -93,7 +95,8 @@ class Course extends BaseModel
     // so the "My Courses" grid can show Registered vs Register per card.
     public static function feedForStudent(int $studentId): array
     {
-        $sql = 'SELECT c.*, u.full_name AS lecturer_name,
+        $sql = 'SELECT c.*,
+                        CASE WHEN u.approval_status = "approved" THEN u.full_name ELSE NULL END AS lecturer_name,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id) AS assignment_count,
                         (SELECT COUNT(*) FROM assignments a WHERE a.course_id = c.course_id AND a.due_date >= NOW()) AS due_count,
                         (SELECT COUNT(*) FROM course_registrations cr WHERE cr.course_id = c.course_id AND cr.status = "active") AS student_count,
