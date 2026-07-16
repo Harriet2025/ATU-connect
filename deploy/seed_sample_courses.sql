@@ -26,7 +26,7 @@ UPDATE courses SET lecturer_id = 6, description = 'Core data structures & algori
 INSERT IGNORE INTO course_registrations (student_id, course_id, status)
 SELECT s.student_id, c.course_id, 'active'
 FROM students s
-JOIN courses c ON c.course_code IN ('CS 204', 'WEB 302', 'JAVA 201', 'DSA 202', 'EFT 401', 'GRID 401')
+JOIN courses c ON c.course_code IN ('CS 204', 'WEB 302', 'JAVA 201', 'DSA 202', 'EFT 401', 'GRID 401', 'NVC 101', 'CRT 101')
 WHERE s.student_id BETWEEN 1 AND 5;
 
 -- --- Post sample assignments (created_by = the course's lecturer's user) ---
